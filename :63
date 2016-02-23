@@ -1,0 +1,145 @@
+var map;
+var brtAchtergrondPastel;
+var bagKaartlaag;
+var pandenKaartlaag;
+var rdProjection;
+var rdProjectionExtent;
+var size;
+var resolutions;
+var matrixIds;
+var wkt;
+var feature;
+var brtAchtgrondPastelOptions;
+
+$(document).ready(initApp);
+
+function initApp() {
+	//initialise variables, layers and the map
+	initVars();
+	defineLayers();
+	initMap();
+	$('#getBAG').click(function(){
+		console.log('Er is geklikt.');
+		$.post("http://almere.pilod.nl/sparql?default-graph-uri=&query=SELECT+DISTINCT+%3Fgeom+%3Fhuisnummer+%3Fpc%0D%0AWHERE+%7B%0D%0A%3Fnummer+a+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23Nummeraanduiding%3E+.%0D%0A%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23postcode%3E+%3Fpc+.%0D%0A%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23huisnummer%3E+%3Fhuisnummer+.%0D%0A%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23gerelateerdeOpenbareRuimte%3E+%3For+.%0D%0A%3Fvo+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23hoofdadres%3E+%3Fnummer+.+%0D%0A%3Fvo+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23onderdeelVan%3E+%3Fpand+.%0D%0A%3Fpand+%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23hasGeometry%3E+%3Fgeompand+.%0D%0A%3Fgeompand+%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23asWKT%3E+%3Fgeom+.%0D%0AFILTER+regex%28%3Fpc%2C+%221223LS%22%2C+%22i%22%29%0D%0AFILTER+%28xsd%3Ainteger%28%3Fhuisnummer%29+%3D+xsd%3Ainteger%289%29%29+.%0D%0A%7D+order+by+ASC%28%3Fpc%29+ASC%28%3Fhuisnummer%29&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on", null, function(data) {
+				console.log('Dit is het eerste resultaat: geometry van het pand.');
+				console.log(data);
+				console.log(data.results.bindings[0].geom.value);
+			}
+		);
+	});
+}
+
+function initVars(){
+	//init all the variables
+	rdProjection = ol.proj.get('EPSG:28992');
+	//rdProjection.setExtent([-7000, 289000, 300000, 629000]);
+	//rdProjection.setExtent([7624.23727, 305942.69072, 285769.01916, 625595.51780]);
+	//rdProjection.setExtent([-285401.92,22598.08,595401.9199999999,903401.9199999999]);
+	rdProjection.setExtent([-285401.92,22598.08,595401.9199999999,903402]);
+	rdProjectionExtent = rdProjection.getExtent();
+	size = ol.extent.getWidth(rdProjectionExtent) / 256;
+	resolutions = new Array(14);
+	matrixIds = new Array(14);
+	for (var z = 0; z < 15; ++z) {
+		// generate resolutions and matrixIds arrays for this WMTS
+		resolutions[z] = size / Math.pow(2, z);
+		matrixIds[z] = 'EPSG:28992:' + z;
+	}
+	//resolutions= [3440.64, 1720.32, 860.16, 430.08, 215.04, 107.52, 53.76, 26.88, 13.44, 6.72, 3.36, 1.68, 0.84, 0.42, 0.21];
+	var parser = new ol.format.WMTSCapabilities();
+	fetch('https://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaartpastel?layer=brtachtergrondkaartpastel&style=default&tilematrixset=EPSG%3A28992&Service=WMTS&Request=GetCapabilities').then(
+		function(response) {
+			return response.text();
+		}
+	).then(
+		function(text) {
+			var result = parser.read(text);
+			brtAchtgrondPastelOptions = ol.source.WMTS.optionsFromCapabilities(
+				result,
+				{
+					layer: 'brtachtergrondkaartpastel', matrixSet: 'EPSG:28992'
+				}
+			);
+			brtAchtgrondPastelOptions.version=1.0
+		}
+	);
+}
+
+function initMap(){
+	//init the map
+	map = new ol.Map({
+		target: 'map',
+		layers: [
+			brtAchtergrondPastel,
+			//bagKaartlaag
+			pandenKaartlaag
+		],
+		numZoomLevels: 12,
+		logo: false,
+		units: 'm',
+		displayProjection: rdProjection,
+		view: new ol.View({
+			center: [155000, 483000],
+			zoom: 3,
+			projection: rdProjection,
+			maxExtent: rdProjectionExtent
+		})
+	});
+}
+
+function defineLayers() {
+	//define all the layers to show on the map
+	brtAchtergrondPastel = new ol.layer.Tile({
+		source: new ol.source.WMTS(
+			brtAchtgrondPastelOptions
+			/*
+			url: "https://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaartpastel",
+			layer: 'brtachtergrondkaartpastel',
+			matrixSet: 'EPSG:28992',
+			format: 'image/png',
+			projection: rdProjection,
+			tileGrid: new ol.tilegrid.WMTS({
+				origin: ol.extent.getTopLeft(rdProjectionExtent),
+				resolutions: resolutions,
+				matrixIds: matrixIds
+			}),
+			style: 'default',
+			wrapX: true
+		*/
+		)
+	});
+
+	bagKaartlaag = new ol.layer.Tile({
+		source: new ol.source.WMTS({
+			url: "https://geodata.nationaalgeoregister.nl/tiles/service/wmts/bag",
+			layer: 'bag',
+			matrixSet: 'EPSG:28992',
+			format: 'image/png',
+			projection: rdProjection,
+			tileGrid: new ol.tilegrid.WMTS({
+				origin: ol.extent.getTopLeft(rdProjectionExtent),
+				resolutions: resolutions,
+				matrixIds: matrixIds
+			}),
+			style: 'default',
+			wrapX: true
+		})
+	});
+
+	wkt = "POLYGON((5.198611042679 52.22517653248,5.198525245055 52.225198191056,5.1984792059829 52.225131454757,5.1985651198616 52.225109967168,5.198611042679 52.22517653248))";
+	//wkt = "POINT (155000 483000)";
+	wkt = "MULTIPOINT ((5.198611042679 52.22517653248), (5.198525245055 52.225198191056))";
+	//wkt = "MULTIPOINT ((52.22517653248 5.198611042679), (52.225198191056 5.198525245055))";
+	var format = new ol.format.WKT();
+	feature = format.readFeature(wkt, {
+		dataProjection: 'EPSG:4326',
+		featureProjection: 'EPSG:28992'
+	});
+
+	pandenKaartlaag = new ol.layer.Vector({
+		source: new ol.source.Vector({
+			features: [feature]
+		}),
+	});
+
+}
