@@ -121,4 +121,8 @@ function addWKTtoPandenKaartlaag(){
 		featureProjection: 'EPSG:28992'
 	});
 	pandenKaartlaagSource.addFeature(feature);
+	
+	var extent = pandenKaartlaagSource.getExtent();
+	map.getView().setCenter([extent[0],extent[1]]);
+	map.getView().setZoom(11);
 }
