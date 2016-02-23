@@ -81,13 +81,11 @@ function defineLayers() {
 
 	//BRTachtergrondkaartPastel
 	var parser = new ol.format.WMTSCapabilities();
-	fetch('https://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaartpastel?layer=brtachtergrondkaartpastel&style=default&tilematrixset=EPSG%3A28992&Service=WMTS&Request=GetCapabilities').then(
+	$.ajax({
+		url: 'https://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaartpastel?layer=brtachtergrondkaartpastel&style=default&tilematrixset=EPSG%3A28992&Service=WMTS&Request=GetCapabilities'
+	}).done(
 		function(response) {
-			return response.text();
-		}
-	).then(
-		function(text) {
-			var result = parser.read(text);
+			var result = parser.read(response);
 			brtAchtgrondPastelOptions = ol.source.WMTS.optionsFromCapabilities(
 				result,
 				{
