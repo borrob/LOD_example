@@ -10,6 +10,9 @@ var pandenKaartlaagSource;
 
 var osm;
 
+var cbsWijkenBuurten;
+var cbsWijkenBuurtenSource;
+
 $(document).ready(initApp);
 
 function initApp() {
@@ -86,6 +89,21 @@ function defineLayers() {
 	osm = new ol.layer.Tile({
 		source: new ol.source.OSM()
 	});
+
+	//CBS
+	cbsWijkenBuurtenSource = new ol.source.ImageWMS({
+		url: "https://geodata.nationaalgeoregister.nl/wijkenbuurten2014/wms",
+		params: {
+			"LAYERS": "cbs_wijken_2014",
+			"FORMAT": "image/png",
+			"CRS": "EPSG:28992"
+		}
+	});
+	cbsWijkenBuurten = new ol.layer.Image({
+		source: cbsWijkenBuurtenSource
+	});
+	//map.addLayer(cbsWijkenBuurten);
+	//cbsWijkenBuurten.setZIndex(5);
 }
 
 function removeAllFromPandenKaartlaag() {
@@ -111,6 +129,19 @@ function addWKTtoPandenKaartlaag(addWKT){
 		(extent[1] + extent[3])/2
 	]);
 	map.getView().setZoom(11);
+
+	var interpoint = addFeature.getGeometry().getInteriorPoint().getFirstCoordinate();
+	var viewResolution = map.getView().getResolution();
+	var url = cbsWijkenBuurtenSource.getGetFeatureInfoUrl(
+		interpoint, viewResolution, 'EPSG:28992',{'INFO_FORMAT': 'application/json'}
+	);
+	if (url) {
+		$.ajax({
+			url: url
+		}).done(function(data){
+			console.log(data);
+		});
+	}
 }
 
 function getBAGpand(pc, hn){
