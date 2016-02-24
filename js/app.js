@@ -19,7 +19,7 @@ function initApp() {
 	defineLayers();
 
 	$('#getBAG').click(function(){
-		getBAGpand();
+		startZoeken();
 	});
 }
 
@@ -126,4 +126,10 @@ function getBAGpand(pc, hn){
 			addWKTtoPandenKaartlaag(addWKT);
 		}
 	});
+}
+
+function startZoeken(){
+	var pc = $("#pc")[0].value;
+	var hn = $("#hn")[0].value;
+	getBAGpand(pc, hn);
 }
