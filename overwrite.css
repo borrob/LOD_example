@@ -22,6 +22,12 @@ h2, h3 {
 	background: rgb(223, 117, 20);
 }
 
+.oranjelijn {
+	border-style: solid;
+	border-color: rgb(223,117, 20);
+	border-width: thin;
+}
+
 .l-box {
 	padding: 1em;
 }
