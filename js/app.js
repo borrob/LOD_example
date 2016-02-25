@@ -38,6 +38,7 @@ function initMap(){
 		target: 'map',
 		numZoomLevels: 12,
 		logo: false,
+		theme: null,
 		units: 'm',
 		displayProjection: rdProjection,
 		view: new ol.View({

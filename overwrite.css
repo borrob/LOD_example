@@ -1,0 +1,27 @@
+input {
+	border-color: rgb(223, 117, 20);
+	border-style: solid;
+}
+
+h2, h3 {
+	color: rgb(223, 117, 20);
+}
+
+#map {
+	height: 500px;
+	width: 100%;
+}
+
+.ol-control button{
+	background-color: rgb(223, 117, 20);
+	height: 2em;
+	width: 2em;
+}
+
+.button-ordina{
+	background: rgb(223, 117, 20);
+}
+
+.l-box {
+	padding: 1em;
+}
