@@ -53,13 +53,21 @@ function initMap(){
 function defineLayers() {
 	//define all the layers and load them on the map
 
+	var oranjeStijl = new ol.style.Style({
+		fill: null,
+		stroke: new ol.style.Stroke({
+			color: "rgb(223, 117, 20)",
+			width: 3
+		})
+	});
 	//pandenkaartlaag
 	pandenKaartlaagSource = new ol.source.Vector({
 		//features: [feature]
 	});
 
 	pandenKaartlaag = new ol.layer.Vector({
-		source: pandenKaartlaagSource
+		source: pandenKaartlaagSource,
+		style: oranjeStijl
 	});
 
 	map.addLayer(pandenKaartlaag);
@@ -118,6 +126,7 @@ function removeAllFromPandenKaartlaag() {
 
 function addWKTtoPandenKaartlaag(addWKT){
 	//read WKT and add it to the map (and zoom) and get more info from cbs
+
 	var format = new ol.format.WKT();
 	var addFeature = format.readFeature(addWKT, {
 		dataProjection: 'EPSG:4326',
