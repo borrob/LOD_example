@@ -1,5 +1,5 @@
 [x] Dubbele zoekresultaten verwijderen (enkel de eerste laten zien)
-[ ] zandloper wanneer we wachten op resultaat
+[x] zandloper wanneer we wachten op resultaat
 [x] geometry naar oranje
 [ ] review tekst
 [x] bagpanden als laag toevoegen

@@ -195,6 +195,7 @@ function fillData(){
 			html += "<tr><td>Gemiddelde afstand treinstations:</td><td>" + datprop.treinstation_gemiddelde_afstand_in_km + " km</td></tr>";
 			html += "</tbody></table>";
 			$("#data")[0].innerHTML =html;
+			$("#spinner").toggle();
 		});
 	}
 }
@@ -227,5 +228,6 @@ function startZoeken(){
 	var pc = $("#pc")[0].value;
 	var hn = $("#hn")[0].value;
 	$("#data")[0].innerHTML = "<h2>Zoekresultaten voor: " + pc + "-" + hn + "</h2>";
+	$("#spinner").toggle();
 	getBAGpand(pc, hn);
 }
