@@ -4,4 +4,4 @@
 [x] review tekst
 [x] bagpanden als laag toevoegen
 [x] fix voor geen zoekresultaten
-[ ] code opschonen
+[x] code opschonen

@@ -18,12 +18,16 @@ var cbsWijkenBuurtenSource;
 
 $(document).ready(initApp);
 
+/*
+ * INIT
+ */
 function initApp() {
 	//initialise variables, layers and the map
 	initVars();
 	initMap();
 	defineLayers();
 
+	//add function to UI-elements
 	$('#getBAG').click(function(){
 		startZoeken();
 	});
@@ -45,17 +49,37 @@ function initMap(){
 		units: 'm',
 		displayProjection: rdProjection,
 		view: new ol.View({
-			center: [155000, 483000],
-			zoom: 3,
+			center: [155000, 470000],
+			zoom: 1,
 			projection: rdProjection,
 			maxExtent: rdProjection.getExtent()
 		})
 	});
 }
 
+/*
+ * DEFINE AND ADD MAP LAYERS
+ */
 function defineLayers() {
 	//define all the layers and load them on the map
 
+	//pandenKaartlaag
+	addPandenKaartlaag();
+
+	//bagpanden
+	addBagPandenKaartlaag();
+
+	//BRTachtergrondkaartPastel
+	addBRTachtergrond();
+
+	//OSM
+	addOSM();
+
+	//CBS
+	addCBSKaartlaag();
+}
+
+function addPandenKaartlaag(){
 	var oranjeStijl = new ol.style.Style({
 		fill: new ol.style.Fill({
 			color: "rgba(223, 117, 20, 0.3)"
@@ -77,8 +101,9 @@ function defineLayers() {
 
 	map.addLayer(pandenKaartlaag);
 	pandenKaartlaag.setZIndex(10);
+}
 
-	//bagpanden
+function addBagPandenKaartlaag(){
 	bagPandenKaartlaagSource = new ol.source.ImageWMS({
 		url: "https://geodata.nationaalgeoregister.nl/bag/wms?",
 		params: {
@@ -93,8 +118,9 @@ function defineLayers() {
 	});
 	map.addLayer(bagPandenKaartlaag);
 	bagPandenKaartlaag.setZIndex(4);
+}
 
-	//BRTachtergrondkaartPastel
+function addBRTachtergrond(){
 	var parser = new ol.format.WMTSCapabilities();
 	$.ajax({
 		url: 'https://geodata.nationaalgeoregister.nl/tiles/service/wmts/brtachtergrondkaartpastel?layer=brtachtergrondkaartpastel&style=default&tilematrixset=EPSG%3A28992&Service=WMTS&Request=GetCapabilities'
@@ -114,13 +140,20 @@ function defineLayers() {
 			brtAchtergrondPastel.setZIndex(0);
 		}
 	);
+}
 
-	//OSM
+function addOSM(){
 	osm = new ol.layer.Tile({
 		source: new ol.source.OSM()
 	});
+	//map.addLayer(osm);
+	//osm.setZIndex(1);
+}
 
-	//CBS
+/*
+ * UI FUNCTIONS
+ */
+function addCBSKaartlaag(){
 	cbsWijkenBuurtenSource = new ol.source.ImageWMS({
 		url: "https://geodata.nationaalgeoregister.nl/wijkenbuurten2014/wms",
 		params: {
@@ -146,8 +179,7 @@ function removeAllFromPandenKaartlaag() {
 }
 
 function addWKTtoPandenKaartlaag(addWKT){
-	//read WKT and add it to the map (and zoom)
-
+	//read WKT, add it to the map and zoom
 	var format = new ol.format.WKT();
 	var addFeature = format.readFeature(addWKT, {
 		dataProjection: 'EPSG:4326',
@@ -165,7 +197,7 @@ function addWKTtoPandenKaartlaag(addWKT){
 
 function fillData(){
 	//fill the data-table with data from cbs-wijk
-	//we gebruiken enkel de het eerste pand dat we terug krijgen
+	//only use the first returned building
 	var feature = pandenKaartlaagSource.getFeatures()[0];
 	var interpoint = feature.getGeometry().getInteriorPoint().getFirstCoordinate();
 	var viewResolution = map.getView().getResolution();
