@@ -57,7 +57,9 @@ function defineLayers() {
 	//define all the layers and load them on the map
 
 	var oranjeStijl = new ol.style.Style({
-		fill: null,
+		fill: new ol.style.Fill({
+			color: "rgba(223, 117, 20, 0.3)"
+		}),
 		stroke: new ol.style.Stroke({
 			color: "rgb(223, 117, 20)",
 			width: 3
@@ -158,7 +160,7 @@ function addWKTtoPandenKaartlaag(addWKT){
 		(extent[0] + extent[2])/2,
 		(extent[1] + extent[3])/2
 	]);
-	map.getView().setZoom(11);
+	map.getView().setZoom(12);
 }
 
 function fillData(){
