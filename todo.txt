@@ -1,4 +1,4 @@
-Dubbele zoekresultaten verwijderen (enkel de eerste laten zien)
-zandloper wanneer we wachten op resultaat
-geometry naar oranje
-review tekst
+[x] Dubbele zoekresultaten verwijderen (enkel de eerste laten zien)
+[ ] zandloper wanneer we wachten op resultaat
+[ ] geometry naar oranje
+[ ] review tekst

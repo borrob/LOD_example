@@ -125,7 +125,7 @@ function removeAllFromPandenKaartlaag() {
 }
 
 function addWKTtoPandenKaartlaag(addWKT){
-	//read WKT and add it to the map (and zoom) and get more info from cbs
+	//read WKT and add it to the map (and zoom)
 
 	var format = new ol.format.WKT();
 	var addFeature = format.readFeature(addWKT, {
@@ -140,14 +140,13 @@ function addWKTtoPandenKaartlaag(addWKT){
 		(extent[1] + extent[3])/2
 	]);
 	map.getView().setZoom(11);
-
-	//add data about this feature to the table
-	fillData(addFeature);
 }
 
-function fillData(addFeature){
+function fillData(){
 	//fill the data-table with data from cbs-wijk
-	var interpoint = addFeature.getGeometry().getInteriorPoint().getFirstCoordinate();
+	//we gebruiken enkel de het eerste pand dat we terug krijgen
+	var feature = pandenKaartlaagSource.getFeatures()[0];
+	var interpoint = feature.getGeometry().getInteriorPoint().getFirstCoordinate();
 	var viewResolution = map.getView().getResolution();
 	var url = cbsWijkenBuurtenSource.getGetFeatureInfoUrl(
 		interpoint, viewResolution, 'EPSG:28992',{'INFO_FORMAT': 'application/json'}
@@ -182,21 +181,22 @@ function fillData(addFeature){
 function getBAGpand(pc, hn){
 	//zoek het adres met pc en hn op via SPARQL en voeg alle gevonden records toe aan de kaart
 	var url = "http://almere.pilod.nl/sparql?default-graph-uri=&query=SELECT+DISTINCT+%3Fstraat+%3Fhuisnummer+%3Fpc+%3Fplaats+%3Fgeom%0D%0AWHERE+%7B%0D%0A%3Fnummer+a+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23Nummeraanduiding%3E+.%0D%0A%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23postcode%3E+%3Fpc+.%0D%0A%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23huisnummer%3E+%3Fhuisnummer+.%0D%0A%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23gerelateerdeOpenbareRuimte%3E+%3For+.%0D%0A%3For+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23naamOpenbareRuimte%3E+%3Fstraat+.%0D%0A%3For+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23woonplaatsOpenbareRuimte%3E+%3Fwp+.%0D%0A%3Fwp+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23woonplaatsnaam%3E+%3Fplaats+.%0D%0A%3Fvo+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23hoofdadres%3E+%3Fnummer+.+%0D%0A%3Fvo+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23onderdeelVan%3E+%3Fpand+.%0D%0A%3Fpand+%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23hasGeometry%3E+%3Fgeompand+.%0D%0A%3Fgeompand+%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23asWKT%3E+%3Fgeom+.%0D%0AFILTER+regex%28%3Fpc%2C+%22" + pc + "%22%2C+%22i%22%29%0D%0AFILTER+%28xsd%3Ainteger%28%3Fhuisnummer%29+%3D+xsd%3Ainteger%28%22" + hn + "%22%29%29+.%0D%0A%7D&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on"
-	console.log('Er is geklikt. Maar de Cross-origin werkt nog niet lekker');
 	$.ajax({
 		url: url
 	}).done(function(data) {
+		var html = "<table><tbody><tr><td>Straat: </td><td>";
+		html += data.results.bindings[0].straat.value + "</td></tr>";
+		html += "<tr><td>Huisnummer:</td><td>" + data.results.bindings[0].huisnummer.value + "</td></tr>";
+		html += "<tr><td>Postcode:</td><td>" + data.results.bindings[0].pc.value + "</td></tr>";
+		html += "<tr><td>Plaats:</td><td>" + data.results.bindings[0].plaats.value + "</td></tr>";
+		html += "</tbody></table>";
+		$("#data")[0].innerHTML += html;
 		for (var binding in data.results.bindings){
 			var addWKT = data.results.bindings[binding].geom.value;
-			var html = "<table><tbody><tr><td>Straat: </td><td>";
-			html += data.results.bindings[binding].straat.value + "</td></tr>";
-			html += "<tr><td>Huisnummer:</td><td>" + data.results.bindings[binding].huisnummer.value + "</td></tr>";
-			html += "<tr><td>Postcode:</td><td>" + data.results.bindings[binding].pc.value + "</td></tr>";
-			html += "<tr><td>Plaats:</td><td>" + data.results.bindings[binding].plaats.value + "</td></tr>";
-			html += "</tbody></table>";
-			$("#data")[0].innerHTML += html;
 			addWKTtoPandenKaartlaag(addWKT);
 		}
+		//add data about this feature to the table
+		fillData();
 	});
 }
 
@@ -207,5 +207,4 @@ function startZoeken(){
 	var hn = $("#hn")[0].value;
 	$("#data")[0].innerHTML = "<h2>Zoekresultaten voor: " + pc + "-" + hn + "</h2>";
 	getBAGpand(pc, hn);
-
 }
