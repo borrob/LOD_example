@@ -8,6 +8,9 @@ var brtAchtergrondPastel;
 var pandenKaartlaag;
 var pandenKaartlaagSource;
 
+var bagPandenKaartlaag;
+var bagPandenKaartlaagSource;
+
 var osm;
 
 var cbsWijkenBuurten;
@@ -72,6 +75,22 @@ function defineLayers() {
 
 	map.addLayer(pandenKaartlaag);
 	pandenKaartlaag.setZIndex(10);
+
+	//bagpanden
+	bagPandenKaartlaagSource = new ol.source.ImageWMS({
+		url: "https://geodata.nationaalgeoregister.nl/bag/wms?",
+		params: {
+			"LAYERS": "pand",
+			"FORMAT": "image/png",
+			"CRS": "EPSG:28992"
+		}
+	});
+	bagPandenKaartlaag = new ol.layer.Image({
+		source: bagPandenKaartlaagSource,
+		opacity: 0.5
+	});
+	map.addLayer(bagPandenKaartlaag);
+	bagPandenKaartlaag.setZIndex(4);
 
 	//BRTachtergrondkaartPastel
 	var parser = new ol.format.WMTSCapabilities();

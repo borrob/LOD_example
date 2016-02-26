@@ -2,3 +2,4 @@
 [ ] zandloper wanneer we wachten op resultaat
 [ ] geometry naar oranje
 [ ] review tekst
+[x] bagpanden als laag toevoegen
