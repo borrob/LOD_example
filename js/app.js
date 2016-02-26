@@ -206,19 +206,26 @@ function getBAGpand(pc, hn){
 	$.ajax({
 		url: url
 	}).done(function(data) {
-		var html = "<table><tbody><tr><td>Straat: </td><td>";
-		html += data.results.bindings[0].straat.value + "</td></tr>";
-		html += "<tr><td>Huisnummer:</td><td>" + data.results.bindings[0].huisnummer.value + "</td></tr>";
-		html += "<tr><td>Postcode:</td><td>" + data.results.bindings[0].pc.value + "</td></tr>";
-		html += "<tr><td>Plaats:</td><td>" + data.results.bindings[0].plaats.value + "</td></tr>";
-		html += "</tbody></table>";
-		$("#data")[0].innerHTML += html;
-		for (var binding in data.results.bindings){
-			var addWKT = data.results.bindings[binding].geom.value;
-			addWKTtoPandenKaartlaag(addWKT);
+		if (data.results.bindings.length>0){
+			var html = "<table><tbody><tr><td>Straat: </td><td>";
+			html += data.results.bindings[0].straat.value + "</td></tr>";
+			html += "<tr><td>Huisnummer:</td><td>" + data.results.bindings[0].huisnummer.value + "</td></tr>";
+			html += "<tr><td>Postcode:</td><td>" + data.results.bindings[0].pc.value + "</td></tr>";
+			html += "<tr><td>Plaats:</td><td>" + data.results.bindings[0].plaats.value + "</td></tr>";
+			html += "</tbody></table>";
+			$("#data")[0].innerHTML += html;
+			for (var binding in data.results.bindings){
+				var addWKT = data.results.bindings[binding].geom.value;
+				addWKTtoPandenKaartlaag(addWKT);
+			}
+			//add data about this feature to the table
+			fillData();
+		} else {
+			//geen data binnengekomen
+			var html = "<p>Sorry... geen data gevonden.</p>";
+			$("#data")[0].innerHTML += html;
+			$("#spinner").toggle();
 		}
-		//add data about this feature to the table
-		fillData();
 	});
 }
 

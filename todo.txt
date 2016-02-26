@@ -3,3 +3,4 @@
 [x] geometry naar oranje
 [ ] review tekst
 [x] bagpanden als laag toevoegen
+[x] fix voor geen zoekresultaten
