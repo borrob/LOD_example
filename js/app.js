@@ -1,3 +1,9 @@
+define(["proj4", "openLayers", "jQuery"], function (proj4, ol, $) {
+
+//set RD projection
+ol.proj.setProj4(proj4);
+proj4.defs("EPSG:28992", "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155026.8 +y_0=463011.48 +ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,-1.8774,4.0725 +units=m +no_defs");
+
 var map;
 
 var rdProjection;
@@ -15,8 +21,6 @@ var osm;
 
 var cbsWijkenBuurten;
 var cbsWijkenBuurtenSource;
-
-$(document).ready(initApp);
 
 /*
  * INIT
@@ -270,3 +274,8 @@ function startZoeken(){
 	$("#spinner").toggle();
 	getBAGpand(pc, hn);
 }
+var returnfunction = function(){
+	initApp();
+};
+return returnfunction;
+});
