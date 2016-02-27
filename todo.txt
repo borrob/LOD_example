@@ -1,9 +1,0 @@
-[x] Dubbele zoekresultaten verwijderen (enkel de eerste laten zien)
-[x] zandloper wanneer we wachten op resultaat
-[x] geometry naar oranje
-[x] review tekst
-[x] bagpanden als laag toevoegen
-[x] fix voor geen zoekresultaten
-[x] code opschonen
-[x] invoegen namespace ter afscherming globals
-[x] text aanpassen
