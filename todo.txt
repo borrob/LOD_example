@@ -5,3 +5,5 @@
 [x] bagpanden als laag toevoegen
 [x] fix voor geen zoekresultaten
 [x] code opschonen
+[x] invoegen namespace ter afscherming globals
+[ ] text aanpassen
