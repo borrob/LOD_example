@@ -19,6 +19,8 @@ var mapapp =(function(){
 	
 	app.cbsWijkenBuurten=null;
 	var cbsWijkenBuurtenSource;
+	
+	app.pubs=new pub();
 
 	$(document).ready(initApp);
 
@@ -213,10 +215,12 @@ var mapapp =(function(){
 		//fill the data-table with data from cbs-wijk
 		//only use the first returned building
 		var feature = pandenKaartlaagSource.getFeatures()[0];
-		var interpoint = feature.getGeometry().getInteriorPoint().getFirstCoordinate();
+		var interpoint = feature.getGeometry().getInteriorPoint();
+		var interpointCoords = interpoint.getFirstCoordinate();
+		app.pubs.getPubs(interpoint);
 		var viewResolution = app.map.getView().getResolution();
 		var url = cbsWijkenBuurtenSource.getGetFeatureInfoUrl(
-			interpoint, viewResolution, 'EPSG:28992',{'INFO_FORMAT': 'application/json'}
+			interpointCoords, viewResolution, 'EPSG:28992',{'INFO_FORMAT': 'application/json'}
 		);
 		if (url) {
 			$.ajax({
