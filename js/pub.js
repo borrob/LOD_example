@@ -2,7 +2,7 @@ var pub = function(){
 
 	var pub={};
 
-	var pubLayerSoure;
+	var pubLayerSource;
 	pub.pubLayer=null;
 
 	pub.createLayer = function(index){
@@ -11,25 +11,24 @@ var pub = function(){
 			"pointRadius":20
 		});
 		
-		pubLayerSoure = new ol.source.Vector({
+		pubLayerSource = new ol.source.Vector({
 			//features: [feature]
 		});
 		
 		pub.pubLayer = new ol.layer.Vector({
-			source: pubLayerSoure,
-			style: pubLayerStyle
+			source: pubLayerSource
+			//,
+			//style: pubLayerStyle
 		});
 		
 		pub.pubLayer.setZIndex(index);
-		
-		return pub.pubLayer
 	};
 
 	pub.removeAll = function(){
 		//remove all pubs from the layer
-		var feats = pubLayerSoure.getFeatures();
+		var feats = pubLayerSource.getFeatures();
 		for (var feat in feats){
-			pubLayerSoure.removeFeature(feats[feat]);
+			pubLayerSource.removeFeature(feats[feat]);
 		}
 	};
 
@@ -42,13 +41,36 @@ var pub = function(){
 			url: "http://overpass-api.de/api/interpreter",
 			type: "POST",
 			data: {
-				data: "node[amenity=pub](" + (lat-0.1).toString() + "," + (lon-0.1).toString() + "," + (lat+0.1).toString() + "," + (lon+0.1).toString() +");out;"
+				data: "[out:json];node[amenity=pub](" + (lat-0.1).toString() + "," + (lon-0.1).toString() + "," + (lat+0.1).toString() + "," + (lon+0.1).toString() +");out;"
 			}
 		}).done(
 			function(result){
 				console.log(result);
+				addPubsToSource(result);
 			}
 		);
+	}
+
+	addPubsToSource = function(pubs_json){
+		//add the pubs from pubs_json to the pubLayerSoure
+		var elems = pubs_json.elements;
+		for (var el in elems){
+			console.log(el, elems[el]);
+			//var theName = elems[el].tags.name || "no_name";
+			console.log(elems[el].lat, elems[el].lon);
+			var lon = elems[el].lat;
+			var lat = elems[el].lon;
+			var coor = new ol.geom.Point([lat, lon]);
+			coor.transform('EPSG:4326', 'EPSG:28992');
+			var feat = new ol.Feature({
+				geometry: coor,
+				//dataProjection: 'EPSG:4326',
+				//featureProjection: 'EPSG:28992',
+				name: "testname"
+			});
+			console.log(feat);
+			pubLayerSource.addFeature(feat);
+		}
 	}
 
 	return pub;

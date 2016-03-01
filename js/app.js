@@ -217,7 +217,11 @@ var mapapp =(function(){
 		var feature = pandenKaartlaagSource.getFeatures()[0];
 		var interpoint = feature.getGeometry().getInteriorPoint();
 		var interpointCoords = interpoint.getFirstCoordinate();
+		app.pubs.createLayer(7);
+		app.map.removeLayer(app.pubs.pubLayer);
+		app.pubs.removeAll();
 		app.pubs.getPubs(interpoint);
+		app.map.addLayer(app.pubs.pubLayer);
 		var viewResolution = app.map.getView().getResolution();
 		var url = cbsWijkenBuurtenSource.getGetFeatureInfoUrl(
 			interpointCoords, viewResolution, 'EPSG:28992',{'INFO_FORMAT': 'application/json'}
