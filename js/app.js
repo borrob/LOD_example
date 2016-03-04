@@ -258,9 +258,7 @@ var mapapp =(function(){
 		}
 	}
 
-	function getBAGpand(pc, hn){
-		//zoek het adres met pc en hn op via SPARQL en voeg alle gevonden records toe aan de kaart
-		var url = "http://almere.pilod.nl/sparql?default-graph-uri=&query=SELECT+DISTINCT+%3Fstraat+%3Fhuisnummer+%3Fpc+%3Fplaats+%3Fgeom%0D%0AWHERE+%7B%0D%0A%3Fnummer+a+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23Nummeraanduiding%3E+.%0D%0A%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23postcode%3E+%3Fpc+.%0D%0A%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23huisnummer%3E+%3Fhuisnummer+.%0D%0A%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23gerelateerdeOpenbareRuimte%3E+%3For+.%0D%0A%3For+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23naamOpenbareRuimte%3E+%3Fstraat+.%0D%0A%3For+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23woonplaatsOpenbareRuimte%3E+%3Fwp+.%0D%0A%3Fwp+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23woonplaatsnaam%3E+%3Fplaats+.%0D%0A%3Fvo+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23hoofdadres%3E+%3Fnummer+.+%0D%0A%3Fvo+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23onderdeelVan%3E+%3Fpand+.%0D%0A%3Fpand+%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23hasGeometry%3E+%3Fgeompand+.%0D%0A%3Fgeompand+%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23asWKT%3E+%3Fgeom+.%0D%0AFILTER+regex%28%3Fpc%2C+%22" + pc + "%22%2C+%22i%22%29%0D%0AFILTER+%28xsd%3Ainteger%28%3Fhuisnummer%29+%3D+xsd%3Ainteger%28%22" + hn + "%22%29%29+.%0D%0A%7D&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on"
+	function getBAGpandFromUrl(url){
 		$.ajax({
 			url: url,
 			dataType: "jsonp"
@@ -268,7 +266,14 @@ var mapapp =(function(){
 			if (data.results.bindings.length>0){
 				var html = "<table><tbody><tr><td>Straat: </td><td>";
 				html += data.results.bindings[0].straat.value + "</td></tr>";
-				html += "<tr><td>Huisnummer:</td><td>" + data.results.bindings[0].huisnummer.value + "</td></tr>";
+				html += "<tr><td>Huisnummer:</td><td>" + data.results.bindings[0].huisnummer.value;
+				if (data.results.bindings[0].huisletter!=undefined) {
+					html += data.results.bindings[0].huisletter.value
+				}
+				if (data.results.bindings[0].toevoeging!=undefined) {
+					html += data.results.bindings[0].toevoeging.value
+				}
+				html += "</td></tr>";
 				html += "<tr><td>Postcode:</td><td>" + data.results.bindings[0].pc.value + "</td></tr>";
 				html += "<tr><td>Plaats:</td><td>" + data.results.bindings[0].plaats.value + "</td></tr>";
 				html += "</tbody></table>";
@@ -288,14 +293,74 @@ var mapapp =(function(){
 		});
 	}
 
+	function getBAGpandFromPcHn(pc, hn){
+		//zoek het adres met pc en hn op via SPARQL en voeg alle gevonden records toe aan de kaart
+		var url = "http://almere.pilod.nl/sparql?default-graph-uri=&query=SELECT+DISTINCT+%3Fstraat+%3Fhuisnummer+%3Fpc+%3Fplaats+%3Fgeom%0D%0AWHERE+%7B%0D%0A%3Fnummer+a+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23Nummeraanduiding%3E+.%0D%0A%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23postcode%3E+%3Fpc+.%0D%0A%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23huisnummer%3E+%3Fhuisnummer+.%0D%0A%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23gerelateerdeOpenbareRuimte%3E+%3For+.%0D%0A%3For+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23naamOpenbareRuimte%3E+%3Fstraat+.%0D%0A%3For+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23woonplaatsOpenbareRuimte%3E+%3Fwp+.%0D%0A%3Fwp+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23woonplaatsnaam%3E+%3Fplaats+.%0D%0A%3Fvo+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23hoofdadres%3E+%3Fnummer+.+%0D%0A%3Fvo+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23onderdeelVan%3E+%3Fpand+.%0D%0A%3Fpand+%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23hasGeometry%3E+%3Fgeompand+.%0D%0A%3Fgeompand+%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23asWKT%3E+%3Fgeom+.%0D%0AFILTER+regex%28%3Fpc%2C+%22" + pc + "%22%2C+%22i%22%29%0D%0AFILTER+%28xsd%3Ainteger%28%3Fhuisnummer%29+%3D+xsd%3Ainteger%28%22" + hn + "%22%29%29+.%0D%0A%7D&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on"
+		getBAGpandFromUrl(url);
+	}
+
+	function getBAGpandFromPcHnHl(pc, hn, hl){
+		//zoek het adres met pc en hn op via SPARQL en voeg alle gevonden records toe aan de kaart
+		var url = "http://almere.pilod.nl/sparql?default-graph-uri=&query=SELECT+DISTINCT+%3Fstraat+%3Fhuisnummer+%3Fhuisletter+%3Fpc+%3Fplaats+%3Fgeom+WHERE+%7B%3Fnummer+a+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23Nummeraanduiding%3E+.+%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23postcode%3E+%3Fpc+.+%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23huisnummer%3E+%3Fhuisnummer+.+%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23huisletter%3E+%3Fhuisletter+.+%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23gerelateerdeOpenbareRuimte%3E+%3For+.+%3For+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23naamOpenbareRuimte%3E+%3Fstraat+.+%3For+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23woonplaatsOpenbareRuimte%3E+%3Fwp+.+%3Fwp+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23woonplaatsnaam%3E+%3Fplaats+.+%3Fvo+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23hoofdadres%3E+%3Fnummer+.+%3Fvo+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23onderdeelVan%3E+%3Fpand+.+%3Fpand+%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23hasGeometry%3E+%3Fgeompand+.+%3Fgeompand+%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23asWKT%3E+%3Fgeom+.+FILTER+regex%28%3Fpc%2C+%22" + pc + "%22%2C+%22i%22%29+.+FILTER+%28xsd%3Ainteger%28%3Fhuisnummer%29+%3D+xsd%3Ainteger%28%22" + hn + "%22%29%29+.+FILTER+regex%28%3Fhuisletter%2C+%22" + hl + "%22%2C+%22i%22%29%7D&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on"
+		getBAGpandFromUrl(url);
+	}
+
+	function getBAGpandFromPcHnHlToev(pc, hn, hl, toev){
+		//zoek het adres met pc en hn op via SPARQL en voeg alle gevonden records toe aan de kaart
+		var url = "http://almere.pilod.nl/sparql?default-graph-uri=&query=SELECT+DISTINCT+%3Fstraat+%3Fhuisnummer+%3Fhuisletter+%3Ftoevoeging+%3Fpc+%3Fplaats+%3Fgeom+WHERE+%7B%3Fnummer+a+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23Nummeraanduiding%3E+.+%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23postcode%3E+%3Fpc+.+%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23huisnummer%3E+%3Fhuisnummer+.+%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23huisletter%3E+%3Fhuisletter+.+%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23huisnummertoevoeging%3E+%3Ftoevoeging+.+%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23gerelateerdeOpenbareRuimte%3E+%3For+.+%3For+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23naamOpenbareRuimte%3E+%3Fstraat+.+%3For+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23woonplaatsOpenbareRuimte%3E+%3Fwp+.+%3Fwp+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23woonplaatsnaam%3E+%3Fplaats+.+%3Fvo+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23hoofdadres%3E+%3Fnummer+.+%3Fvo+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23onderdeelVan%3E+%3Fpand+.+%3Fpand+%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23hasGeometry%3E+%3Fgeompand+.+%3Fgeompand+%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23asWKT%3E+%3Fgeom+.+FILTER+regex%28%3Fpc%2C%22" + pc + "%22%2C+%22i%22%29+.+FILTER+%28xsd%3Ainteger%28%3Fhuisnummer%29+%3D+xsd%3Ainteger%28%22" + hn + "%22%29%29+.+FILTER+regex%28%3Fhuisletter%2C%22" + hl + "%22%2C+%22i%22%29+.+FILTER+regex%28%3Ftoevoeging%2C%22" + toev + "%22%2C+%22i%22%29%7D&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on"
+		getBAGpandFromUrl(url);
+	}
+
+	function getBAGpandFromPcHnToev(pc, hn, toev){
+		//zoek het adres met pc en hn op via SPARQL en voeg alle gevonden records toe aan de kaart
+		var url = "http://almere.pilod.nl/sparql?default-graph-uri=&query=SELECT+DISTINCT+%3Fstraat+%3Fhuisnummer+%3Ftoevoeging+%3Fpc+%3Fplaats+%3Fgeom+WHERE+%7B%3Fnummer+a+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23Nummeraanduiding%3E+.+%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23postcode%3E+%3Fpc+.+%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23huisnummer%3E+%3Fhuisnummer+.+%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23huisnummertoevoeging%3E+%3Ftoevoeging+.+%3Fnummer+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23gerelateerdeOpenbareRuimte%3E+%3For+.+%3For+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23naamOpenbareRuimte%3E+%3Fstraat+.+%3For+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23woonplaatsOpenbareRuimte%3E+%3Fwp+.+%3Fwp+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23woonplaatsnaam%3E+%3Fplaats+.+%3Fvo+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23hoofdadres%3E+%3Fnummer+.+%3Fvo+%3Chttp%3A%2F%2Fbag.kadaster.nl%2Fdef%23onderdeelVan%3E+%3Fpand+.+%3Fpand+%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23hasGeometry%3E+%3Fgeompand+.+%3Fgeompand+%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23asWKT%3E+%3Fgeom+.+FILTER+regex%28%3Fpc%2C%22" + pc + "%22%2C+%22i%22%29+.+FILTER+%28xsd%3Ainteger%28%3Fhuisnummer%29+%3D+xsd%3Ainteger%28%22" + hn + "%22%29%29+.+FILTER+regex%28%3Ftoevoeging%2C%22" + toev + "%22%2C+%22i%22%29%7D&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on"
+		getBAGpandFromUrl(url);
+	}
+
 	function startZoeken(){
 		//haal postcode en huisnummer op en start de zoekactie
 		removeAllFromPandenKaartlaag();
 		var pc = $("#pc")[0].value;
 		var hn = $("#hn")[0].value;
-		$("#data")[0].innerHTML = "<h2>Zoekresultaten voor: " + pc + "-" + hn + "</h2>";
+		var hl = $("#hl")[0].value;
+		var toev = $("#toev")[0].value;
 		$("#spinner").toggle();
-		getBAGpand(pc, hn);
+
+		if (pc===""){
+			$("#spinner").toggle();
+			alert("Vul een postcode in.");
+			return;
+		}
+
+		if (hn===""){
+			$("#spinner").toggle();
+			alert("Vul een huisnummer in.");
+			return;
+		}
+
+		if (pc!="" && hn!="" && hl==="" && toev===""){
+			$("#data")[0].innerHTML = "<h2>Zoekresultaten voor: " + pc + "-" + hn + "</h2>";
+			getBAGpandFromPcHn(pc, hn);
+			return;
+		}
+
+		if (pc!="" && hn!="" && hl!="" && toev===""){
+			$("#data")[0].innerHTML = "<h2>Zoekresultaten voor: " + pc + "-" + hn + hl + "</h2>";
+			getBAGpandFromPcHnHl(pc, hn, hl);
+			return;
+		}
+
+		if (pc!="" && hn!="" && hl!="" && toev!=""){
+			$("#data")[0].innerHTML = "<h2>Zoekresultaten voor: " + pc + "-" + hn + hl + toev + "</h2>";
+			getBAGpandFromPcHnHlToev(pc, hn, hl, toev);
+			return;
+		}
+
+		if (pc!="" && hn!="" && hl==="" && toev!=""){
+			$("#data")[0].innerHTML = "<h2>Zoekresultaten voor: " + pc + "-" + hn + toev + "</h2>";
+			getBAGpandFromPcHnToev(pc, hn, toev);
+			return;
+		}
 	}
 
 	return app;
