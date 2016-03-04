@@ -22,6 +22,8 @@ var mapapp =(function(){
 	
 	app.pubs=null;
 
+	var tekenvolgorde;
+
 	$(document).ready(initApp);
 
 	/*
@@ -46,6 +48,15 @@ var mapapp =(function(){
 		rdProjection.setExtent([-7000, 289000, 300000, 629000]);
 		
 		app.pubs = new pub();
+
+		tekenvolgorde = {
+			"brtAchtergrondPastel": 0,
+			"pandenKaartlaag": 10,
+			"bagPandenKaartlaag": 4,
+			"osm": 1,
+			"cbsWijkenBuurten": 5,
+			"pubs": 7
+		};
 	}
 
 	function initMap(){
@@ -89,7 +100,7 @@ var mapapp =(function(){
 		addCBSKaartlaag();
 	
 		//pubs
-		app.pubs.createLayer(7);
+		app.pubs.createLayer(tekenvolgorde.pubs);
 		app.map.addLayer(app.pubs.pubLayer);
 	}
 
@@ -114,7 +125,7 @@ var mapapp =(function(){
 		});
 	
 		app.map.addLayer(app.pandenKaartlaag);
-		app.pandenKaartlaag.setZIndex(10);
+		app.pandenKaartlaag.setZIndex(tekenvolgorde.pandenKaartlaag);
 	}
 
 	function addBagPandenKaartlaag(){
@@ -133,7 +144,7 @@ var mapapp =(function(){
 		});
 	
 		app.map.addLayer(app.bagPandenKaartlaag);
-		app.bagPandenKaartlaag.setZIndex(4);
+		app.bagPandenKaartlaag.setZIndex(tekenvolgorde.bagPandenKaartlaag);
 	}
 
 	function addBRTachtergrond(){
@@ -155,7 +166,7 @@ var mapapp =(function(){
 				});
 			
 				app.map.addLayer(app.brtAchtergrondPastel);
-				app.brtAchtergrondPastel.setZIndex(0);
+				app.brtAchtergrondPastel.setZIndex(tekenvolgorde.brtAchtergrondPastel);
 			}
 		);
 	}
@@ -166,7 +177,7 @@ var mapapp =(function(){
 		});
 	
 		//map.addLayer(app.osm);
-		//app.osm.setZIndex(1);
+		//app.osm.setZIndex(tekenvolgorde.osm);
 	}
 
 	function addCBSKaartlaag(){
@@ -183,7 +194,7 @@ var mapapp =(function(){
 		});
 	
 		//map.addLayer(app.cbsWijkenBuurten);
-		//cbsWijkenBuurten.setZIndex(5);
+		//cbsWijkenBuurten.setZIndex(tekenvolgorde.cbsWijkenBuurten);
 	}
 
 	/*
