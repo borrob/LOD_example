@@ -247,7 +247,7 @@ var mapapp =(function(){
 			}).done(function(data){
 				var datprop = data.features[0].properties;
 				var html = $("#data")[0].innerHTML.slice(0,-16); //remove </tbody></table>
-				html += "<tr><td>Locatie:</td><td>[" + parseInt(interpoint[0]) + ", " + parseInt(interpoint[1]) + "]</td></tr>";
+				html += "<tr><td>Locatie:</td><td>[" + parseInt(interpointCoords[0]) + ", " + parseInt(interpointCoords[1]) + "]</td></tr>";
 				html += "<tr colspan=2><td><h3>CBS 2014 data</h3></td></tr>";
 				html += "<tr><td>Wijknaam:</td><td>" + datprop.wijknaam + "</td></tr>";
 				html += "<tr><td>Gemeentenaam:</td><td>" + datprop.gemeentenaam + "</td></tr>";
