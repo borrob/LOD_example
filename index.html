@@ -1,8 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="nl">
 
 <head>
+	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Linked Data and GIS: all in one go">
+	<meta name="keywords" content="HTML, JAVASCRIPT, GIS, GEO, LOD, LinkedOpenData, OSM">
+	<meta name="author" content="Rob van Loon">
 	<title>GEO en Linked Open Data</title>
 	<link rel="stylesheet" href="css/pure-min.css" type="text/css">
 	<link rel="stylesheet" href="css/ol.css" type="text/css">
@@ -11,6 +15,7 @@
 	<script src="js/28992.js" type="text/javascript"></script>
 	<script src="js/ol.js" type="text/javascript"></script>
 	<script src="js/jquery-2.2.0.min.js" type="text/javascript"></script>
+	<script src="js/pub.js" type="text/javascript"></script>
 	<script src="js/app.js" type="text/javascript"></script>
 </head>
 
@@ -19,15 +24,17 @@
 		<div class="pure-u-3-5">
 			<div id="map"></div>
 			<div class="l-box">
-				<p>Dit is een simpele demo-applicatie die de mogelijkheden van LinkedData toont. Er wordt via SPARQL in een triple-store gezocht naar informatie over een adres. Het pand met die adresinformatie wordt getoond in de kaart. Omdat het maar een simpele demo-applicatie is, zit er bijvoorbeeld nog geen controle in op de invoer en het is niet mogelijk te zoeken op toevoegingen op huisnummer of huisletter. Behalve het adres en het pand, wordt data van het CBS met wijkinformatie over 2014 getoond.</p>
+				<p>Dit is een simpele demo-applicatie die de mogelijkheden van LinkedData toont. Er wordt via SPARQL in een triple-store gezocht naar informatie over een adres. Het pand met die adresinformatie wordt getoond in de kaart. Omdat het maar een simpele demo-applicatie is, zit er bijvoorbeeld nog geen controle in op de invoervelden. Behalve het adres en het pand, wordt data van het CBS met wijkinformatie over 2014 getoond. Één van de statistieken is het gemiddelde aantal café's binnen 1 km. Om dat nog wat duidelijker te maken, worden vanuit OSM de café's en kroegen opgehaald en op de kaart getoond.</p>
 			</div>
 		</div>
 		<div class="pure-u-2-5">
 			<div class="l-box">
 				<h2>LinkedData Voorbeeld</h2>
-				<p>Voer een postcode en huisnummer in en klik op 'zoek'. Via de Linked Data Store wordt nu met dit adres het pand opgezocht. In de kaart verschijnt het pand en aan de rechterkant komt informatie over de wijk (uit de CBS 2014 dataset). Het kan 10-15 seconden duren voordat het antwoord verschijnt.</p>
+				<p>Voer een postcode en huisnummer in en klik op 'zoek'. Via de Linked Data Store wordt nu met dit adres het pand opgezocht. In de kaart verschijnt het pand en aan de rechterkant komt informatie over de wijk (uit de CBS 2014 dataset). Het kan 10-15 seconden duren voordat het antwoord verschijnt. Café's worden met een blauwe ster op de kaart getoond.</p>
 				<p>Postcode: <input type="text" id="pc" value="3811BN" style="width: 75px;"/>
 				Huisnummer: <input type="number" id="hn" value="30" style="width: 35px;"/>
+				Huisletter: <input type="text" id="hl" value="" style="width: 20px;"/>
+				Toevoeging: <input type="text" id="toev" values="" style="width: 35px;"/>
 				<button class="button-ordina pure-button" id="getBAG">ZOEK</button>
 				</p>
 				<hr class="oranjelijn"/>
