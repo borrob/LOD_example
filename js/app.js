@@ -281,10 +281,10 @@ var mapapp =(function(){
 				}
 				html += "<tr><td>Huisnummer:</td><td>" + data.results.bindings[0].huisnummer.value;
 				if (data.results.bindings[0].huisletter!=undefined) {
-					html += data.results.bindings[0].huisletter.value
+					html += "-" + data.results.bindings[0].huisletter.value
 				}
 				if (data.results.bindings[0].toevoeging!=undefined) {
-					html += data.results.bindings[0].toevoeging.value
+					html += "-" + data.results.bindings[0].toevoeging.value
 				}
 				html += "</td></tr>";
 				html += "<tr><td>Postcode:</td><td>" + data.results.bindings[0].pc.value + "</td></tr>";
@@ -372,7 +372,7 @@ var mapapp =(function(){
 		}
 
 		if (pc!="" && hn!="" && hl==="" && toev!=""){
-			$("#data")[0].innerHTML = "<h2>Zoekresultaten voor: " + pc + "-" + hn + toev + "</h2>";
+			$("#data")[0].innerHTML = "<h2>Zoekresultaten voor: " + pc + "-" + hn + "-" + toev + "</h2>";
 			getBAGpandFromPcHnToev(pc, hn, toev);
 			return;
 		}
