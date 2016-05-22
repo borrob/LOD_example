@@ -24,17 +24,17 @@
 		<div class="pure-u-3-5">
 			<div id="map"></div>
 			<div class="l-box">
-				<p>Dit is een simpele demo-applicatie die de mogelijkheden van LinkedData toont. Er wordt via SPARQL in een triple-store gezocht naar informatie over een adres. Het pand met die adresinformatie wordt getoond in de kaart. Omdat het maar een simpele demo-applicatie is, zit er bijvoorbeeld nog geen controle in op de invoervelden. Behalve het adres en het pand, wordt data van het CBS met wijkinformatie over 2014 getoond. Één van de statistieken is het gemiddelde aantal café's binnen 1 km. Om dat nog wat duidelijker te maken, worden vanuit OSM de café's en kroegen opgehaald en op de kaart getoond.</p>
+				<p>This is a simple demo application showing the possibilities of Linked Data. Information on a address is searched in a triple-store via SPARQL. The building connected to that address is shown on the map. The application looks for statistical information on the area of the building. This information is obtained from <a href="https://www.cbs.nl/en-gb" target="_blank">Statistics Netherlands</a>. One of the statistical information is about the average number of bars within a 1 km radius. To make it more interesting: we use <a href="http://openstreetmap.org" target="_blank">OpenStreetMap</a> to tell us the location of the pubs and bars</p>
 			</div>
 		</div>
 		<div class="pure-u-2-5">
 			<div class="l-box">
-				<h2>LinkedData Voorbeeld</h2>
-				<p>Voer een postcode en huisnummer in en klik op 'zoek'. Via de Linked Data Store wordt nu met dit adres het pand opgezocht. In de kaart verschijnt het pand en aan de rechterkant komt informatie over de wijk (uit de CBS 2014 dataset). Het kan 10-15 seconden duren voordat het antwoord verschijnt. Café's worden met een blauwe ster op de kaart getoond.</p>
-				<p>Postcode: <input type="text" id="pc" value="3811BN" style="width: 75px;"/>
-				Huisnummer: <input type="number" id="hn" value="30" style="width: 35px;"/>
-				Huisletter: <input type="text" id="hl" value="" style="width: 20px;"/>
-				Toevoeging: <input type="text" id="toev" values="" style="width: 35px;"/>
+				<h2>LinkedData Example</h2>
+				<p>Enter a zipcode and a house number and click the search button. A linked data a store is now searched for this address. The building is shown on the map and more information about the area is presented as well. It can take up to 10-15 seconds before an awnser appears. The cars and pubs around the area are indicated on the map.</p>
+				<p>ZIP: <input type="text" id="pc" value="3811BN" style="width: 75px;"/>
+				House number: <input type="number" id="hn" value="30" style="width: 35px;"/>
+				House letter: <input type="text" id="hl" value="" style="width: 20px;"/>
+				Addition: <input type="text" id="toev" values="" style="width: 35px;"/>
 				<button class="button-ordina pure-button" id="getBAG">ZOEK</button>
 				</p>
 				<hr class="oranjelijn"/>
