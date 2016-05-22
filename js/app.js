@@ -247,21 +247,21 @@ var mapapp =(function(){
 			}).done(function(data){
 				var datprop = data.features[0].properties;
 				var html = $("#data")[0].innerHTML.slice(0,-16); //remove </tbody></table>
-				html += "<tr><td>Locatie:</td><td>[" + parseInt(interpointCoords[0]) + ", " + parseInt(interpointCoords[1]) + "]</td></tr>";
+				html += "<tr><td>Location:</td><td>[" + parseInt(interpointCoords[0]) + ", " + parseInt(interpointCoords[1]) + "]</td></tr>";
 				html += "<tr colspan=2><td><h3>CBS 2014 data</h3></td></tr>";
-				html += "<tr><td>Wijknaam:</td><td>" + datprop.wijknaam + "</td></tr>";
-				html += "<tr><td>Gemeentenaam:</td><td>" + datprop.gemeentenaam + "</td></tr>";
-				html += "<tr><td>Oppervlakte:</td><td>" + datprop.oppervlakte_totaal_in_ha + " ha</td></tr>";
-				html += "<tr><td>Woningvoorraad:</td><td>" + datprop.woningvoorraad + "</td></tr>";
-				html += "<tr><td>Aantal inwoners (tot/m/v):</td><td>" + datprop.aantal_inwoners + "/" + datprop.mannen + "/" + datprop.vrouwen + "</td></tr>";
-				html += "<tr><td>Aantal huishoudens:</td><td>" + datprop.aantal_huishoudens + "</td></tr>";
-				html += "<tr><td>Aantal personenauto's:</td><td>" + datprop.personenautos_totaal +  "</td></tr>";
-				html += "<tr><td>Gemiddelde woningwaarde:</td><td>" + datprop.gemiddelde_woningwaarde + " x 1.000 euro</td></tr>";
-				html += "<tr><td>Gemiddeld gasverbruik:</td><td>" + datprop.gemiddeld_gasverbruik_totaal + " m3/jaar </td></tr>";
-				html += "<tr><td>Gemiddeld elektriciteitsverbruik:</td><td>" + datprop.gemiddeld_electriciteitsverbruik_totaal + " kWh/jaar</td></tr>";
-				html += "<tr><td>Gemiddeld aantal cafe's binnen 1 km:</td><td>" + datprop.cafe_gemiddeld_aantal_binnen_1_km + "</td></tr>";
-				html += "<tr><td>Gemiddelde afstand oprit hoofdverkeersweg:</td><td>" + datprop.oprit_hoofdverkeersweg_gemiddelde_afstand_in_km + " km</td></tr>";
-				html += "<tr><td>Gemiddelde afstand treinstations:</td><td>" + datprop.treinstation_gemiddelde_afstand_in_km + " km</td></tr>";
+				html += "<tr><td>Area:</td><td>" + datprop.wijknaam + "</td></tr>";
+				html += "<tr><td>City:</td><td>" + datprop.gemeentenaam + "</td></tr>";
+				html += "<tr><td>Area:</td><td>" + datprop.oppervlakte_totaal_in_ha + " ha</td></tr>";
+				html += "<tr><td>Number of houses:</td><td>" + datprop.woningvoorraad + "</td></tr>";
+				html += "<tr><td>Number of inhabitants (tot/m/f):</td><td>" + datprop.aantal_inwoners + "/" + datprop.mannen + "/" + datprop.vrouwen + "</td></tr>";
+				html += "<tr><td>Number of households:</td><td>" + datprop.aantal_huishoudens + "</td></tr>";
+				html += "<tr><td>Number of cars:</td><td>" + datprop.personenautos_totaal +  "</td></tr>";
+				html += "<tr><td>Average house price:</td><td>" + datprop.gemiddelde_woningwaarde + " x 1.000 euro</td></tr>";
+				html += "<tr><td>Average gas usage:</td><td>" + datprop.gemiddeld_gasverbruik_totaal + " m3/year </td></tr>";
+				html += "<tr><td>Average electricity usage:</td><td>" + datprop.gemiddeld_electriciteitsverbruik_totaal + " kWh/year</td></tr>";
+				html += "<tr><td>Average number of bars within 1 km:</td><td>" + datprop.cafe_gemiddeld_aantal_binnen_1_km + "</td></tr>";
+				html += "<tr><td>Average distance to highway entracne:</td><td>" + datprop.oprit_hoofdverkeersweg_gemiddelde_afstand_in_km + " km</td></tr>";
+				html += "<tr><td>Average distance to train station::</td><td>" + datprop.treinstation_gemiddelde_afstand_in_km + " km</td></tr>";
 				html += "</tbody></table>";
 				$("#data")[0].innerHTML =html;
 				$("#spinner").toggle();
@@ -277,9 +277,9 @@ var mapapp =(function(){
 			if (data.results.bindings.length>0){
 				var html = "<table><tbody>";
 				if (data.results.bindings[0].straat!=undefined){
-					html +="<tr><td>Straat: </td><td>" + data.results.bindings[0].straat.value + "</td></tr>";
+					html +="<tr><td>Street: </td><td>" + data.results.bindings[0].straat.value + "</td></tr>";
 				}
-				html += "<tr><td>Huisnummer:</td><td>" + data.results.bindings[0].huisnummer.value;
+				html += "<tr><td>House number:</td><td>" + data.results.bindings[0].huisnummer.value;
 				if (data.results.bindings[0].huisletter!=undefined) {
 					html += "-" + data.results.bindings[0].huisletter.value
 				}
@@ -287,9 +287,9 @@ var mapapp =(function(){
 					html += "-" + data.results.bindings[0].toevoeging.value
 				}
 				html += "</td></tr>";
-				html += "<tr><td>Postcode:</td><td>" + data.results.bindings[0].pc.value + "</td></tr>";
+				html += "<tr><td>ZIP:</td><td>" + data.results.bindings[0].pc.value + "</td></tr>";
 				if (data.results.bindings[0].plaats!=undefined){
-					html += "<tr><td>Plaats:</td><td>" + data.results.bindings[0].plaats.value + "</td></tr>";
+					html += "<tr><td>City:</td><td>" + data.results.bindings[0].plaats.value + "</td></tr>";
 				}
 				html += "</tbody></table>";
 				$("#data")[0].innerHTML += html;
@@ -301,7 +301,7 @@ var mapapp =(function(){
 				fillData();
 			} else {
 				//geen data binnengekomen
-				var html = "<p>Sorry... geen data gevonden.</p>";
+				var html = "<p>Sorry... no data found.</p>";
 				$("#data")[0].innerHTML += html;
 				$("#spinner").toggle();
 			}
@@ -343,36 +343,36 @@ var mapapp =(function(){
 
 		if (pc===""){
 			$("#spinner").toggle();
-			alert("Vul een postcode in.");
+			alert("Enter a zip code.");
 			return;
 		}
 
 		if (hn===""){
 			$("#spinner").toggle();
-			alert("Vul een huisnummer in.");
+			alert("Enter a house number.");
 			return;
 		}
 
 		if (pc!="" && hn!="" && hl==="" && toev===""){
-			$("#data")[0].innerHTML = "<h2>Zoekresultaten voor: " + pc + "-" + hn + "</h2>";
+			$("#data")[0].innerHTML = "<h2>Search results for: " + pc + "-" + hn + "</h2>";
 			getBAGpandFromPcHn(pc, hn);
 			return;
 		}
 
 		if (pc!="" && hn!="" && hl!="" && toev===""){
-			$("#data")[0].innerHTML = "<h2>Zoekresultaten voor: " + pc + "-" + hn + hl + "</h2>";
+			$("#data")[0].innerHTML = "<h2>Search results for: " + pc + "-" + hn + hl + "</h2>";
 			getBAGpandFromPcHnHl(pc, hn, hl);
 			return;
 		}
 
 		if (pc!="" && hn!="" && hl!="" && toev!=""){
-			$("#data")[0].innerHTML = "<h2>Zoekresultaten voor: " + pc + "-" + hn + hl + toev + "</h2>";
+			$("#data")[0].innerHTML = "<h2>Search results for: " + pc + "-" + hn + hl + toev + "</h2>";
 			getBAGpandFromPcHnHlToev(pc, hn, hl, toev);
 			return;
 		}
 
 		if (pc!="" && hn!="" && hl==="" && toev!=""){
-			$("#data")[0].innerHTML = "<h2>Zoekresultaten voor: " + pc + "-" + hn + "-" + toev + "</h2>";
+			$("#data")[0].innerHTML = "<h2>Search results for: " + pc + "-" + hn + "-" + toev + "</h2>";
 			getBAGpandFromPcHnToev(pc, hn, toev);
 			return;
 		}
