@@ -115,9 +115,7 @@ var mapapp =(function(){
 			})
 		});
 	
-		pandenKaartlaagSource = new ol.source.Vector({
-			//features: [feature]
-		});
+		pandenKaartlaagSource = new ol.source.Vector({});
 	
 		app.pandenKaartlaag = new ol.layer.Vector({
 			source: pandenKaartlaagSource,
@@ -175,9 +173,6 @@ var mapapp =(function(){
 		app.osm = new ol.layer.Tile({
 			source: new ol.source.OSM()
 		});
-	
-		//map.addLayer(app.osm);
-		//app.osm.setZIndex(tekenvolgorde.osm);
 	}
 
 	function addCBSKaartlaag(){
@@ -192,9 +187,6 @@ var mapapp =(function(){
 		cbsWijkenBuurten = new ol.layer.Image({
 			source: cbsWijkenBuurtenSource
 		});
-	
-		//map.addLayer(app.cbsWijkenBuurten);
-		//cbsWijkenBuurten.setZIndex(tekenvolgorde.cbsWijkenBuurten);
 	}
 
 	/*
