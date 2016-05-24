@@ -20,4 +20,4 @@ This website uses html, javascript and css. Three javascript libraries are used:
 It's all html, css and javascript. To obtain the data from the Linked Data Stores, there ise SPARQL and TURBO involved.
 
 ## Data
-This website makes use of open data from the [PILOD project] (http://www.pilod.nl/) and from [PDOK] (http://www.pdok.nl).
+This website makes use of open data from the [PILOD project] (http://www.pilod.nl/), from [PDOK] (http://www.pdok.nl), and from [Openstreetmap] (http://openstreetmap.org].)
