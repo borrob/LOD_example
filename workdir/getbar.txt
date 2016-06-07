@@ -1,0 +1,19 @@
+Prefix lgdr:<http://linkedgeodata.org/triplify/>
+Prefix lgdo:<http://linkedgeodata.org/ontology/>
+Prefix geom:<http://geovocab.org/geometry#>
+Prefix ogc:<http://www.opengis.net/ont/geosparql#>
+
+Select distinct * {
+	{
+		?s  ?p lgdo:Bar
+	}
+	UNION
+	{
+		?s ?p lgdo:Pub
+	} .
+	?s geom:geometry ?geom .
+	?geom ogc:asWKT ?wkt .
+	FILTER (bif:st_intersects(?wkt, "POINT(5.3873 52.1557)"^^ogc:wktLiteral, 0.1)) .
+}
+
+Limit 1000
