@@ -1,0 +1,17 @@
+http://nominatim.openstreetmap.org/search?q=Netherlands+Krankeledenstraat+30&format=xml&polygon=0&addressdetails=1
+
+—>
+
+<searchresults timestamp="Wed, 08 Jun 16 18:09:32 +0000" attribution="Data © OpenStreetMap contributors, ODbL 1.0. http://www.openstreetmap.org/copyright" querystring="Netherlands Krankeledenstraat 30" polygon="false" exclude_place_ids="27926438" more_url="http://nominatim.openstreetmap.org/search.php?format=xml&exclude_place_ids=27926438&accept-language=nl-nl&addressdetails=1&q=Netherlands+Krankeledenstraat+30">
+<place place_id="27926438" osm_type="node" osm_id="2672773825" place_rank="30" boundingbox="52.1551223,52.1552223,5.3871535,5.3872535" lat="52.1551723" lon="5.3872035" display_name="30, Krankeledenstraat, Stadskern, Amersfoort, Utrecht, Nederland, 3811BN, Koninkrijk der Nederlanden" class="place" type="house" importance="0.111">
+<house_number>30</house_number>
+<pedestrian>Krankeledenstraat</pedestrian>
+<neighbourhood>Stadskern</neighbourhood>
+<suburb>Amersfoort</suburb>
+<city>Amersfoort</city>
+<state>Utrecht</state>
+<postcode>3811BN</postcode>
+<country>Koninkrijk der Nederlanden</country>
+<country_code>nl</country_code>
+</place>
+</searchresults>
