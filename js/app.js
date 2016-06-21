@@ -9,6 +9,9 @@ var mapapp =(function(){
 	
 	app.bagPandenKaartlaag=null;
 	var bagPandenKaartlaagSource;
+
+	app.addressPointLayer=null;
+	var addressPointLayerSource;
 	
 	app.osm=null;
 	
@@ -46,7 +49,8 @@ var mapapp =(function(){
 			"bagPandenKaartlaag": 4,
 			"osm": 1,
 			"cbsWijkenBuurten": 5,
-			"pubs": 7
+			"pubs": 7,
+			"addressPoint": 6
 		};
 	}
 
@@ -89,6 +93,10 @@ var mapapp =(function(){
 		//pubs
 		app.pubs.createLayer(tekenvolgorde.pubs);
 		app.map.addLayer(app.pubs.pubLayer);
+
+		//addressPoint
+		addAddressPointLayer();
+
 	}
 
 	function addPandenKaartlaag(){
@@ -112,6 +120,18 @@ var mapapp =(function(){
 		app.map.addLayer(app.pandenKaartlaag);
 		app.pandenKaartlaag.setZIndex(tekenvolgorde.pandenKaartlaag);
 	}
+
+	function addAddressPointLayer(){
+		//TODO: add style
+		
+		addressPointLayerSource = new ol.source.Vector({});
+		app.addressPointLayer = new ol.layer.Vector({
+			source: addressPointLayerSource
+			//TODO: add style
+		});
+		app.map.addLayer(app.addressPointLayer);
+		app.addressPointLayer.setZIndex(tekenvolgorde.addressPoint);
+		}
 
 	function addBagPandenKaartlaag(){
 		bagPandenKaartlaagSource = new ol.source.ImageWMS({
@@ -166,6 +186,13 @@ var mapapp =(function(){
 		$("#data")[0].innerHTML="";
 	}
 
+	function removeAllFromAdressPointLayer(){
+		for (var feat in feats){
+			var feats = addressPointLayerSource.removeFeature(feats[feat]);
+		}
+		$("#data")[0].innerHTML="";
+	}
+
 	function addWKTtoPandenKaartlaag(addWKT){
 		//read WKT, add it to the map and zoom
 		var format = new ol.format.WKT();
@@ -181,6 +208,23 @@ var mapapp =(function(){
 			(extent[1] + extent[3])/2
 		]);
 		app.map.getView().setZoom(12);
+	}
+
+	function addWKTtoAddressPointLayer(addWKT){
+		//read WKT, add it to the map and zoom
+		var format = new ol.format.WKT();
+		var addFeature = format.readFeature(addWKT, {
+			dataProjection: 'EPSG:4326',
+			featureProjection: 'EPSG:3857'
+		});
+		addressPointLayerSource.addFeature(addFeature);
+	
+		var extent = addressPointLayerSource.getExtent();
+		app.map.getView().setCenter([
+			(extent[0] + extent[2])/2,
+			(extent[1] + extent[3])/2
+		]);
+		app.map.getView().setZoom(17);
 	}
 
 	function fillData(){
@@ -270,6 +314,8 @@ var mapapp =(function(){
 			url: url
 		}).done(function(data) {
 			console.log(data);
+			var addWKT = "POINT("+data[0].lon + " " + data[0].lat + ")";
+			addWKTtoAddressPointLayer(addWKT);
 		});
 		$("#spinner").toggle();
 	}
@@ -285,7 +331,7 @@ var mapapp =(function(){
 
 	function startZoeken(){
 		//haal postcode en huisnummer op en start de zoekactie
-		removeAllFromPandenKaartlaag();
+		removeAllFromAdressPointLayer();
 		var address = $("#ad")[0].value;
 		$("#spinner").toggle();
 
