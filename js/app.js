@@ -39,9 +39,6 @@ var mapapp =(function(){
 
 	function initVars(){
 		//init all the variables
-		rdProjection = ol.proj.get('EPSG:28992');
-		rdProjection.setExtent([-7000, 289000, 300000, 629000]);
-		
 		app.pubs = new pub();
 
 		tekenvolgorde = {
@@ -61,12 +58,11 @@ var mapapp =(function(){
 			logo: false,
 			theme: null,
 			units: 'm',
-			displayProjection: rdProjection,
 			view: new ol.View({
-				center: [155000, 470000],
-				zoom: 1,
-				projection: rdProjection,
-				maxExtent: rdProjection.getExtent()
+				center: [570000, 6837140],
+				zoom: 7,
+				displayprojection: 'EPSG:4326',
+				projection: 'EPSG:3857',
 			})
 		});
 	}
@@ -79,16 +75,16 @@ var mapapp =(function(){
 		//define all the layers and load them on the map
 	
 		//pandenKaartlaag
-		addPandenKaartlaag();
+		//addPandenKaartlaag();
 	
 		//bagpanden
-		addBagPandenKaartlaag();
+		//addBagPandenKaartlaag();
 	
 		//OSM
 		addOSM();
 	
 		//CBS
-		addCBSKaartlaag();
+		//addCBSKaartlaag();
 	
 		//pubs
 		app.pubs.createLayer(tekenvolgorde.pubs);
