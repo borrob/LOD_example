@@ -42,13 +42,10 @@ var pub = function(){
 		}
 	};
 
-	pub.getPubs = function(the_point){
-		//retrieve all the pubs around [lat, lon] from OSM
+	pub.getWKTpubs = function (lon, lat) {
+		lon = parseFloat(lon);
+		lat = parseFloat(lat);
 		pub.removeAll();
-		
-		the_point.transform('EPSG:28992', 'EPSG:4326');
-		var lon=the_point.getCoordinates()[0];
-		var lat=the_point.getCoordinates()[1];
 		$.ajax({
 			url: "http://overpass-api.de/api/interpreter",
 			type: "POST",
@@ -72,7 +69,7 @@ var pub = function(){
 					var lon = elems[el].lat;
 					var lat = elems[el].lon;
 					var coor = new ol.geom.Point([lat, lon]);
-					coor.transform('EPSG:4326', 'EPSG:28992');
+					coor.transform('EPSG:4326', 'EPSG:3857');
 					var feat = new ol.Feature({
 						geometry: coor,
 						name: theName
@@ -82,6 +79,5 @@ var pub = function(){
 			}
 		}
 	}
-
 	return pub;
 };

@@ -317,6 +317,7 @@ var mapapp =(function(){
 			console.log(data);
 			var addWKT = "POINT("+data[0].lon + " " + data[0].lat + ")";
 			addWKTtoAddressPointLayer(addWKT);
+			app.pubs.getWKTpubs(data[0].lon, data[0].lat);
 		});
 		$("#spinner").toggle();
 	}
