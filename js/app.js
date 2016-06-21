@@ -187,6 +187,7 @@ var mapapp =(function(){
 	}
 
 	function removeAllFromAdressPointLayer(){
+		var feats = addressPointLayerSource.getFeatures();
 		for (var feat in feats){
 			var feats = addressPointLayerSource.removeFeature(feats[feat]);
 		}
@@ -321,6 +322,7 @@ var mapapp =(function(){
 	}
 
 	function doSearch(ad){
+		removeAllFromAdressPointLayer();
 		ad = ad.replace(/\ /g,'+');
 		console.log(ad);
 		var url = "http://nominatim.openstreetmap.org/search?q=";
