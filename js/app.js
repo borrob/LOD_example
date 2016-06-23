@@ -195,7 +195,6 @@ var mapapp =(function(){
 
 	function addWKTtoPandenKaartlaag(addWKT){
 		//read WKT, add it to the map and zoom
-		console.log(addWKT);
 		var format = new ol.format.WKT();
 		var addFeature = format.readFeature(addWKT, {
 			dataProjection: 'EPSG:4326',
@@ -305,15 +304,33 @@ var mapapp =(function(){
 	function doBuildings(lat_string, lon_string){
 		var lat = parseFloat(lat_string);
 		var lon = parseFloat(lon_string);
-		var url = "http://linkedgeodata.org/sparql?default-graph-uri=http%3A%2F%2Flinkedgeodata.org&query=Prefix+lgdo%3A+%3Chttp%3A%2F%2Flinkedgeodata.org%2Fontology%2F%3E%0D%0APrefix+geom%3A+%3Chttp%3A%2F%2Fgeovocab.org%2Fgeometry%23%3E%0D%0APrefix+ogc%3A+%3Chttp%3A%2F%2Fwww.opengis.net%2Font%2Fgeosparql%23%3E%0D%0APrefix+owl%3A+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23%3E%0D%0A%0D%0ASelect+%3Fwkt+%7B%0D%0A++%3Fx%0D%0A++++a+lgdo%3AAmenity+%3B%0D%0A++++geom%3Ageometry+%5B%0D%0A++++++ogc%3AasWKT+%3Fwkt%0D%0A++++%5D+%0D%0A%0D%0AFILTER+%28bif%3Ast_intersects%28%3Fwkt%2C+%22POINT%285.3873+52.1557%29%22%5E%5Eogc%3AwktLiteral%2C+0.01%29+%26%26+regex%28str%28%3Fwkt%29%2C%22LINESTRING%22%2C%22i%22%29%29.%0D%0A%0D%0A%7D%0D%0ALIMIT+1000&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on";
 		$.ajax({
-			url: url,
-			type: "POST"
+			url: "http://overpass-api.de/api/interpreter",
+			type: "POST",
+			data: {
+				data: "[out:json];way[\"building\"~\".\"](" + (lat-0.005).toString() + "," + (lon-0.005).toString() + "," + (lat+0.005).toString() + "," + (lon+0.005).toString() +");(._;>;);out;"
+				}
 		}).done(function(data) {
-			console.log(data);
-			var dat = data.results.bindings;
+			var dat = data.elements;
+			var nodes = {};
+			var way = {};
 			for (var d in dat){
-				addWKTtoPandenKaartlaag(dat[d].wkt.value);
+				if (dat[d].type === "node"){
+					nodes[dat[d].id]=dat[d];
+				}
+				else {
+					if (dat[d].type === "way"){
+						way[dat[d].id]=dat[d];
+					}
+				}
+			}
+			for (var w in way){
+				var wkt="LINESTRING(";
+				for (var n in way[w].nodes){
+					var node = way[w].nodes[n];
+					wkt+= nodes[node].lon + " " + nodes[node].lat + ", ";
+				}
+				addWKTtoPandenKaartlaag(wkt.substr(0,wkt.length-2)+")");
 			}
 		});
 	}

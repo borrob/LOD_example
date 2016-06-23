@@ -1,0 +1,20 @@
+/*
+This is an example Overpass query.
+Try it out by pressing the Run button above!
+You can find more examples with the Load tool.
+*/
+way
+  ["building"~"."]
+  ({{bbox}});
+(._;>;);
+out;
+
+[out:json];
+way
+  ["building"~"."](52.13158695,5.0734936023923405,52.231586950.1,5.173493602392340.1);
+(._;>;);
+out;
+
+[out:json];node["amenity"~"pub|bar"](52.13158695,5.0734936023923405,52.33158695,5.27349360239234);out;
+
+[out:json];way["building"~"."](52.13158695,5.0734936023923405,52.231586950.1,5.173493602392340.1);out;
