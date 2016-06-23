@@ -45,7 +45,7 @@ var mapapp =(function(){
 		app.pubs = new pub();
 
 		tekenvolgorde = {
-			"pandenKaartlaag": 10,
+			"pandenKaartlaag": 2,
 			"bagPandenKaartlaag": 4,
 			"osm": 1,
 			"cbsWijkenBuurten": 5,
@@ -99,12 +99,12 @@ var mapapp =(function(){
 	}
 
 	function addPandenKaartlaag(){
-		var oranjeStijl = new ol.style.Style({
+		var buildingStyle = new ol.style.Style({
 			fill: new ol.style.Fill({
-				color: "rgba(223, 117, 20, 0.3)"
+				color: "rgba(150, 150, 150, 0.8)"
 			}),
 			stroke: new ol.style.Stroke({
-				color: "rgb(223, 117, 20)",
+				color: "rgb(100, 200, 100)",
 				width: 3
 			})
 		});
@@ -113,7 +113,7 @@ var mapapp =(function(){
 	
 		app.pandenKaartlaag = new ol.layer.Vector({
 			source: pandenKaartlaagSource,
-			style: oranjeStijl
+			style: buildingStyle
 		});
 	
 		app.map.addLayer(app.pandenKaartlaag);
@@ -315,6 +315,8 @@ var mapapp =(function(){
 			var nodes = {};
 			var way = {};
 			for (var d in dat){
+				//loop through the returned data
+				//extract nodes and ways
 				if (dat[d].type === "node"){
 					nodes[dat[d].id]=dat[d];
 				}
@@ -325,12 +327,13 @@ var mapapp =(function(){
 				}
 			}
 			for (var w in way){
-				var wkt="LINESTRING(";
+				var wkt="POLYGON((";
 				for (var n in way[w].nodes){
 					var node = way[w].nodes[n];
 					wkt+= nodes[node].lon + " " + nodes[node].lat + ", ";
 				}
-				addWKTtoPandenKaartlaag(wkt.substr(0,wkt.length-2)+")");
+				//remove the last komma and close parentices
+				addWKTtoPandenKaartlaag(wkt.substr(0,wkt.length-2)+"))");
 			}
 		});
 	}
