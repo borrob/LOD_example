@@ -121,12 +121,24 @@ var mapapp =(function(){
 	}
 
 	function addAddressPointLayer(){
-		//TODO: add style
+		var addressPointStyle = new ol.style.Style({
+			image: new ol.style.Circle({
+				radius: 10,
+				fill: new ol.style.Fill({
+					color: '#ff9900',
+					opacity: 0.6
+				}),
+				stroke: new ol.style.Stroke({
+					color: '#ffcc00',
+					opacity: 0.4
+				})
+			})
+		});
 		
 		addressPointLayerSource = new ol.source.Vector({});
 		app.addressPointLayer = new ol.layer.Vector({
-			source: addressPointLayerSource
-			//TODO: add style
+			source: addressPointLayerSource,
+			style: addressPointStyle
 		});
 		app.map.addLayer(app.addressPointLayer);
 		app.addressPointLayer.setZIndex(tekenvolgorde.addressPoint);
@@ -194,7 +206,7 @@ var mapapp =(function(){
 	}
 
 	function addWKTtoPandenKaartlaag(addWKT){
-		//read WKT, add it to the map and zoom
+		//read WKT, add it to the map
 		var format = new ol.format.WKT();
 		var addFeature = format.readFeature(addWKT, {
 			dataProjection: 'EPSG:4326',
@@ -217,7 +229,7 @@ var mapapp =(function(){
 			(extent[0] + extent[2])/2,
 			(extent[1] + extent[3])/2
 		]);
-		app.map.getView().setZoom(17);
+		app.map.getView().setZoom(18);
 	}
 
 	function fillData(){
@@ -343,7 +355,6 @@ var mapapp =(function(){
 		$.ajax({
 			url: url
 		}).done(function(data) {
-			console.log(data);
 			addWKT = "POINT("+data[0].lon + " " + data[0].lat + ")";
 			addWKTtoAddressPointLayer(addWKT);
 			app.pubs.getWKTpubs(data[0].lon, data[0].lat);
@@ -355,7 +366,6 @@ var mapapp =(function(){
 
 	function doSearch(ad){
 		ad = ad.replace(/\ /g,'+');
-		console.log(ad);
 		var url = "http://nominatim.openstreetmap.org/search?q=";
 		url += ad
 		url += "&format=json&polygon=0&addressdetails=1";
