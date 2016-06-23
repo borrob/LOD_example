@@ -50,7 +50,7 @@ var pub = function(){
 			url: "http://overpass-api.de/api/interpreter",
 			type: "POST",
 			data: {
-				data: "[out:json];node[\"amenity\"~\"pub|bar\"](" + (lat-0.1).toString() + "," + (lon-0.1).toString() + "," + (lat+0.1).toString() + "," + (lon+0.1).toString() +");out;"
+				data: "[out:json];node[\"amenity\"~\"pub|bar|biergarten\"](" + (lat-0.1).toString() + "," + (lon-0.1).toString() + "," + (lat+0.1).toString() + "," + (lon+0.1).toString() +");out;"
 			}
 		}).done(
 			function(result){
