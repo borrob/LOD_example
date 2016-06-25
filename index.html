@@ -7,7 +7,7 @@
 	<meta name="description" content="Linked Data and GIS: all in one go">
 	<meta name="keywords" content="HTML, JAVASCRIPT, GIS, GEO, LOD, LinkedOpenData, OSM">
 	<meta name="author" content="Rob van Loon">
-	<title>GEO en Linked Open Data</title>
+	<title>GEO and Linked Open Data</title>
 	<link rel="stylesheet" href="css/pure-min.css" type="text/css">
 	<link rel="stylesheet" href="css/ol.css" type="text/css">
 	<link rel="stylesheet" href="css/overwrite.css" type="text/css">
@@ -22,14 +22,15 @@
 		<div class="pure-u-3-5">
 			<div id="map"></div>
 			<div class="l-box">
-				<p>Dit is een simpele demo-applicatie die de mogelijkheden van LinkedData toont. Er wordt via SPARQL in een triple-store gezocht naar informatie over een adres. Het pand met die adresinformatie wordt getoond in de kaart. Behalve het adres en het pand, wordt data van het CBS met wijkinformatie over 2014 getoond. Één van de statistieken is het gemiddelde aantal café's binnen 1 km. Om dat nog wat duidelijker te maken, worden vanuit OSM de café's en kroegen opgehaald en op de kaart getoond.</p>
+				<p>This is a simple demo application showing the possibilities of Linked Open Data. Sadly enough, only the Dutch version actually uses linked data. This (internation) apllciation is based on the OpenStreetMap overpass-api and the turbo language.<br/>
+				Enter a location and click 'SEARCH'. The web application tries to find the location and show it on the map. The maps pans and zooms to show you the location. In a second step, the building structures are plotted as vectors on the map as well. In the last step: the application shows you the locations of the bars and pubs in the neightbourhood. Cheers!</p>
 			</div>
 		</div>
 		<div class="pure-u-2-5">
 			<div class="l-box">
-				<h2>LinkedData Voorbeeld</h2>
-				<p>Voer een postcode en huisnummer in en klik op 'zoek'. Via de Linked Data Store wordt nu met dit adres het pand opgezocht. In de kaart verschijnt het pand en aan de rechterkant komt informatie over de wijk (uit de CBS 2014 dataset). Het kan 10-15 seconden duren voordat het antwoord verschijnt. Café's worden met een blauwe ster op de kaart getoond.</p>
-				<p>Adress: <input type="text" id="ad" style="width: 100px;"/>
+				<h2>Linked Data Example</h2>
+				<p>Enter a location and click 'SEARCH'. The location will be presented to you on the map. Also shown are the building in the neighbourhoods and locations of pubs and bars.</p>
+				<p>Location: <input type="text" id="ad" style="width: 100px;"/>
 				<button class="button-ordina pure-button" id="doSearch">SEARCH</button>
 				</p>
 				<hr class="oranjelijn"/>
