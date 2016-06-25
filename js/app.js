@@ -253,7 +253,7 @@ var mapapp =(function(){
 		removeAllFromBuildingLayer();
 		
 		var address = $("#ad")[0].value;
-		var ad = adress.replace(/\ /g,'+');
+		var ad = address.replace(/\ /g,'+');
 		$("#spinner").toggle();
 		
 		var url = "http://nominatim.openstreetmap.org/search?q=";
