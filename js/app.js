@@ -4,11 +4,8 @@ var mapapp =(function(){
 
 	app.map=null;
 	
-	app.pandenKaartlaag=null;
-	var pandenKaartlaagSource;
-	
-	app.bagPandenKaartlaag=null;
-	var bagPandenKaartlaagSource;
+	app.buildingLayer=null;
+	var buildingLayerSource;
 
 	app.addressPointLayer=null;
 	var addressPointLayerSource;
@@ -45,8 +42,7 @@ var mapapp =(function(){
 		app.pubs = new pub();
 
 		tekenvolgorde = {
-			"pandenKaartlaag": 2,
-			"bagPandenKaartlaag": 4,
+			"buildingLayer": 2,
 			"osm": 1,
 			"cbsWijkenBuurten": 5,
 			"pubs": 7,
@@ -78,11 +74,8 @@ var mapapp =(function(){
 	function defineLayers() {
 		//define all the layers and load them on the map
 	
-		//pandenKaartlaag
-		addPandenKaartlaag();
-	
-		//bagpanden
-		//addBagPandenKaartlaag();
+		//buildingLayer
+		addBuildingLayer();
 	
 		//OSM
 		addOSM();
@@ -98,7 +91,7 @@ var mapapp =(function(){
 		addAddressPointLayer();
 	}
 
-	function addPandenKaartlaag(){
+	function addBuildingLayer(){
 		var buildingStyle = new ol.style.Style({
 			fill: new ol.style.Fill({
 				color: "rgba(150, 150, 150, 0.8)"
@@ -109,15 +102,15 @@ var mapapp =(function(){
 			})
 		});
 	
-		pandenKaartlaagSource = new ol.source.Vector({});
+		buildingLayerSource = new ol.source.Vector({});
 	
-		app.pandenKaartlaag = new ol.layer.Vector({
-			source: pandenKaartlaagSource,
+		app.buildingLayer = new ol.layer.Vector({
+			source: buildingLayerSource,
 			style: buildingStyle
 		});
 	
-		app.map.addLayer(app.pandenKaartlaag);
-		app.pandenKaartlaag.setZIndex(tekenvolgorde.pandenKaartlaag);
+		app.map.addLayer(app.buildingLayer);
+		app.buildingLayer.setZIndex(tekenvolgorde.buildingLayer);
 	}
 
 	function addAddressPointLayer(){
@@ -144,25 +137,6 @@ var mapapp =(function(){
 		app.addressPointLayer.setZIndex(tekenvolgorde.addressPoint);
 		}
 
-	function addBagPandenKaartlaag(){
-		bagPandenKaartlaagSource = new ol.source.ImageWMS({
-			url: "https://geodata.nationaalgeoregister.nl/bag/wms?",
-			params: {
-				"LAYERS": "pand",
-				"FORMAT": "image/png",
-				"CRS": "EPSG:28992"
-			}
-		});
-	
-		app.bagPandenKaartlaag = new ol.layer.Image({
-			source: bagPandenKaartlaagSource,
-			opacity: 0.5
-		});
-	
-		app.map.addLayer(app.bagPandenKaartlaag);
-		app.bagPandenKaartlaag.setZIndex(tekenvolgorde.bagPandenKaartlaag);
-	}
-
 	function addOSM(){
 		app.osm = new ol.layer.Tile({
 			source: new ol.source.OSM()
@@ -188,11 +162,11 @@ var mapapp =(function(){
 	 * UI FUNCTIONS
 	 */
 
-	function removeAllFromPandenKaartlaag() {
+	function removeAllFromBuildingLayer() {
 		//remove all features from the pandenkaartlaag and the datadiv
-		var feats = pandenKaartlaagSource.getFeatures();
+		var feats = buildingLayerSource.getFeatures();
 		for (var feat in feats){
-			pandenKaartlaagSource.removeFeature(feats[feat]);
+			buildingLayerSource.removeFeature(feats[feat]);
 		}
 		$("#data")[0].innerHTML="";
 	}
@@ -205,14 +179,14 @@ var mapapp =(function(){
 		$("#data")[0].innerHTML="";
 	}
 
-	function addWKTtoPandenKaartlaag(addWKT){
+	function addWKTtoBuildingLayer(addWKT){
 		//read WKT, add it to the map
 		var format = new ol.format.WKT();
 		var addFeature = format.readFeature(addWKT, {
 			dataProjection: 'EPSG:4326',
 			featureProjection: 'EPSG:3857'
 		});
-		pandenKaartlaagSource.addFeature(addFeature);
+		buildingLayerSource.addFeature(addFeature);
 	}
 
 	function addWKTtoAddressPointLayer(addWKT){
@@ -236,7 +210,7 @@ var mapapp =(function(){
 		//fill the data-table with data from cbs-wijk
 		//only use the first returned building
 		//also draw the pubs in the area
-		var feature = pandenKaartlaagSource.getFeatures()[0];
+		var feature = buildingLayerSource.getFeatures()[0];
 		var interpoint = feature.getGeometry().getInteriorPoint();
 		var interpointCoords = interpoint.getFirstCoordinate();
 		
@@ -274,45 +248,6 @@ var mapapp =(function(){
 		}
 	}
 
-	function getBAGpandFromUrl(url){
-		$.ajax({
-			url: url,
-			dataType: "jsonp"
-		}).done(function(data) {
-			if (data.results.bindings.length>0){
-				var html = "<table><tbody>";
-				if (data.results.bindings[0].straat!=undefined){
-					html +="<tr><td>Straat: </td><td>" + data.results.bindings[0].straat.value + "</td></tr>";
-				}
-				html += "<tr><td>Huisnummer:</td><td>" + data.results.bindings[0].huisnummer.value;
-				if (data.results.bindings[0].huisletter!=undefined) {
-					html += "-" + data.results.bindings[0].huisletter.value
-				}
-				if (data.results.bindings[0].toevoeging!=undefined) {
-					html += "-" + data.results.bindings[0].toevoeging.value
-				}
-				html += "</td></tr>";
-				html += "<tr><td>Postcode:</td><td>" + data.results.bindings[0].pc.value + "</td></tr>";
-				if (data.results.bindings[0].plaats!=undefined){
-					html += "<tr><td>Plaats:</td><td>" + data.results.bindings[0].plaats.value + "</td></tr>";
-				}
-				html += "</tbody></table>";
-				$("#data")[0].innerHTML += html;
-				for (var binding in data.results.bindings){
-					var addWKT = data.results.bindings[binding].geom.value;
-					addWKTtoPandenKaartlaag(addWKT);
-				}
-				//add data about this feature to the table
-				fillData();
-			} else {
-				//geen data binnengekomen
-				var html = "<p>Sorry... geen data gevonden.</p>";
-				$("#data")[0].innerHTML += html;
-				$("#spinner").toggle();
-			}
-		});
-	}
-
 	function doBuildings(lat_string, lon_string){
 		var lat = parseFloat(lat_string);
 		var lon = parseFloat(lon_string);
@@ -345,7 +280,7 @@ var mapapp =(function(){
 					wkt+= nodes[node].lon + " " + nodes[node].lat + ", ";
 				}
 				//remove the last komma and close parentices
-				addWKTtoPandenKaartlaag(wkt.substr(0,wkt.length-2)+"))");
+				addWKTtoBuildingLayer(wkt.substr(0,wkt.length-2)+"))");
 			}
 		});
 	}
@@ -375,7 +310,7 @@ var mapapp =(function(){
 	function startZoeken(){
 		//haal postcode en huisnummer op en start de zoekactie
 		removeAllFromAdressPointLayer();
-		removeAllFromPandenKaartlaag();
+		removeAllFromBuildingLayer();
 		var address = $("#ad")[0].value;
 		$("#spinner").toggle();
 
