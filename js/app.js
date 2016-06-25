@@ -17,7 +17,7 @@ var mapapp =(function(){
 	
 	app.pubs=null;
 
-	var tekenvolgorde;
+	var layerorder;
 
 	$(document).ready(initApp);
 
@@ -33,7 +33,7 @@ var mapapp =(function(){
 	
 		//add function to UI-elements
 		$('#doSearch').click(function(){
-			startZoeken();
+			doSearch();
 		});
 	}
 
@@ -41,7 +41,7 @@ var mapapp =(function(){
 		//init all the variables
 		app.pubs = new pub();
 
-		tekenvolgorde = {
+		layerorder = {
 			"buildingLayer": 2,
 			"osm": 1,
 			"cbsWijkenBuurten": 5,
@@ -84,7 +84,7 @@ var mapapp =(function(){
 		//addCBSKaartlaag();
 	
 		//pubs
-		app.pubs.createLayer(tekenvolgorde.pubs);
+		app.pubs.createLayer(layerorder.pubs);
 		app.map.addLayer(app.pubs.pubLayer);
 
 		//addressPoint
@@ -110,7 +110,7 @@ var mapapp =(function(){
 		});
 	
 		app.map.addLayer(app.buildingLayer);
-		app.buildingLayer.setZIndex(tekenvolgorde.buildingLayer);
+		app.buildingLayer.setZIndex(layerorder.buildingLayer);
 	}
 
 	function addAddressPointLayer(){
@@ -134,7 +134,7 @@ var mapapp =(function(){
 			style: addressPointStyle
 		});
 		app.map.addLayer(app.addressPointLayer);
-		app.addressPointLayer.setZIndex(tekenvolgorde.addressPoint);
+		app.addressPointLayer.setZIndex(layerorder.addressPoint);
 		}
 
 	function addOSM(){
@@ -255,6 +255,7 @@ var mapapp =(function(){
 			url: "http://overpass-api.de/api/interpreter",
 			type: "POST",
 			data: {
+				//only search in the neighbourhood: offset point with 0.005 in each direction
 				data: "[out:json];way[\"building\"~\".\"](" + (lat-0.005).toString() + "," + (lon-0.005).toString() + "," + (lat+0.005).toString() + "," + (lon+0.005).toString() +");(._;>;);out;"
 				}
 		}).done(function(data) {
@@ -286,36 +287,31 @@ var mapapp =(function(){
 	}
 
 	function getLocation(url){
-		var addWKT;
 		$.ajax({
 			url: url
 		}).done(function(data) {
-			addWKT = "POINT("+data[0].lon + " " + data[0].lat + ")";
+			var addWKT = "POINT("+data[0].lon + " " + data[0].lat + ")";
 			addWKTtoAddressPointLayer(addWKT);
 			app.pubs.getWKTpubs(data[0].lon, data[0].lat);
 			doBuildings(data[0].lat, data[0].lon);
 		});
-
+		
 		$("#spinner").toggle();
 	}
 
-	function doSearch(ad){
-		ad = ad.replace(/\ /g,'+');
+	function doSearch(){
+		
+		removeAllFromAdressPointLayer();
+		removeAllFromBuildingLayer();
+		
+		var address = $("#ad")[0].value;
+		var ad = adress.replace(/\ /g,'+');
+		$("#spinner").toggle();
+		
 		var url = "http://nominatim.openstreetmap.org/search?q=";
 		url += ad
 		url += "&format=json&polygon=0&addressdetails=1";
 		getLocation(url);
-		}
-
-	function startZoeken(){
-		//haal postcode en huisnummer op en start de zoekactie
-		removeAllFromAdressPointLayer();
-		removeAllFromBuildingLayer();
-		var address = $("#ad")[0].value;
-		$("#spinner").toggle();
-
-		doSearch(address);
-
 	}
 
 	return app;
