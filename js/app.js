@@ -12,9 +12,6 @@ var mapapp =(function(){
 	
 	app.osm=null;
 	
-	app.cbsWijkenBuurten=null;
-	var cbsWijkenBuurtenSource;
-	
 	app.pubs=null;
 
 	var layerorder;
@@ -44,7 +41,6 @@ var mapapp =(function(){
 		layerorder = {
 			"buildingLayer": 2,
 			"osm": 1,
-			"cbsWijkenBuurten": 5,
 			"pubs": 7,
 			"addressPoint": 6
 		};
@@ -79,9 +75,6 @@ var mapapp =(function(){
 	
 		//OSM
 		addOSM();
-	
-		//CBS
-		//addCBSKaartlaag();
 	
 		//pubs
 		app.pubs.createLayer(layerorder.pubs);
@@ -144,20 +137,6 @@ var mapapp =(function(){
 		app.map.addLayer(app.osm);
 	}
 
-	function addCBSKaartlaag(){
-		cbsWijkenBuurtenSource = new ol.source.ImageWMS({
-			url: "https://geodata.nationaalgeoregister.nl/wijkenbuurten2014/wms",
-			params: {
-				"LAYERS": "cbs_wijken_2014",
-				"FORMAT": "image/png",
-				"CRS": "EPSG:28992"
-			}
-		});
-		cbsWijkenBuurten = new ol.layer.Image({
-			source: cbsWijkenBuurtenSource
-		});
-	}
-
 	/*
 	 * UI FUNCTIONS
 	 */
@@ -215,37 +194,6 @@ var mapapp =(function(){
 		var interpointCoords = interpoint.getFirstCoordinate();
 		
 		app.pubs.getPubs(interpoint);
-		
-		var viewResolution = app.map.getView().getResolution();
-		var url = cbsWijkenBuurtenSource.getGetFeatureInfoUrl(
-			interpointCoords, viewResolution, 'EPSG:28992',{'INFO_FORMAT': 'application/json'}
-		);
-		if (url) {
-			$.ajax({
-				url: url
-			}).done(function(data){
-				var datprop = data.features[0].properties;
-				var html = $("#data")[0].innerHTML.slice(0,-16); //remove </tbody></table>
-				html += "<tr><td>Locatie:</td><td>[" + parseInt(interpointCoords[0]) + ", " + parseInt(interpointCoords[1]) + "]</td></tr>";
-				html += "<tr colspan=2><td><h3>CBS 2014 data</h3></td></tr>";
-				html += "<tr><td>Wijknaam:</td><td>" + datprop.wijknaam + "</td></tr>";
-				html += "<tr><td>Gemeentenaam:</td><td>" + datprop.gemeentenaam + "</td></tr>";
-				html += "<tr><td>Oppervlakte:</td><td>" + datprop.oppervlakte_totaal_in_ha + " ha</td></tr>";
-				html += "<tr><td>Woningvoorraad:</td><td>" + datprop.woningvoorraad + "</td></tr>";
-				html += "<tr><td>Aantal inwoners (tot/m/v):</td><td>" + datprop.aantal_inwoners + "/" + datprop.mannen + "/" + datprop.vrouwen + "</td></tr>";
-				html += "<tr><td>Aantal huishoudens:</td><td>" + datprop.aantal_huishoudens + "</td></tr>";
-				html += "<tr><td>Aantal personenauto's:</td><td>" + datprop.personenautos_totaal +  "</td></tr>";
-				html += "<tr><td>Gemiddelde woningwaarde:</td><td>" + datprop.gemiddelde_woningwaarde + " x 1.000 euro</td></tr>";
-				html += "<tr><td>Gemiddeld gasverbruik:</td><td>" + datprop.gemiddeld_gasverbruik_totaal + " m3/jaar </td></tr>";
-				html += "<tr><td>Gemiddeld elektriciteitsverbruik:</td><td>" + datprop.gemiddeld_electriciteitsverbruik_totaal + " kWh/jaar</td></tr>";
-				html += "<tr><td>Gemiddeld aantal cafe's binnen 1 km:</td><td>" + datprop.cafe_gemiddeld_aantal_binnen_1_km + "</td></tr>";
-				html += "<tr><td>Gemiddelde afstand oprit hoofdverkeersweg:</td><td>" + datprop.oprit_hoofdverkeersweg_gemiddelde_afstand_in_km + " km</td></tr>";
-				html += "<tr><td>Gemiddelde afstand treinstations:</td><td>" + datprop.treinstation_gemiddelde_afstand_in_km + " km</td></tr>";
-				html += "</tbody></table>";
-				$("#data")[0].innerHTML =html;
-				$("#spinner").toggle();
-			});
-		}
 	}
 
 	function doBuildings(lat_string, lon_string){
