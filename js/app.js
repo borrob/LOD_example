@@ -41,8 +41,8 @@ var mapapp =(function(){
 		layerorder = {
 			"buildingLayer": 2,
 			"osm": 1,
-			"pubs": 7,
-			"addressPoint": 6
+			"pubs": 5,
+			"addressPoint": 7
 		};
 	}
 
