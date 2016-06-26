@@ -59,7 +59,7 @@ var pub = function(){
 		);
 	}
 
-	addPubsToSource = function(pubs_json){
+	var addPubsToSource = function(pubs_json){
 		//add the pubs from pubs_json to the pubLayerSoure
 		if (pubs_json.elements != undefined){
 			var elems = pubs_json.elements;
@@ -78,6 +78,25 @@ var pub = function(){
 				}
 			}
 		}
+		checkFoss4gPub();
 	}
+
+	var foss4gpub = new ol.style.Style({
+		image: new ol.style.Icon({
+			anchor: [0.5, 0.5],
+			src: "https://svn.osgeo.org/osgeo/marketing/logo/GIF/OSGeo_compass.gif",
+			scale: 0.3
+		})
+	});
+
+	var checkFoss4gPub = function(){
+		var foss4gpubs = ["Namenlos", "Tresor", "Pawlow", "Macholds", "Bönssch"];
+		pubLayerSource.getFeatures().forEach(function(feat){
+			if ($.inArray(feat.get('name'), foss4gpubs)>-1){
+				feat.setStyle(foss4gpub);
+			}
+		});
+	}
+
 	return pub;
 };
