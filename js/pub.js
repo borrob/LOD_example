@@ -85,7 +85,7 @@ var pub = function(){
 		image: new ol.style.Icon({
 			anchor: [0.5, 0.5],
 			src: "https://svn.osgeo.org/osgeo/marketing/logo/GIF/OSGeo_compass.gif",
-			scale: 0.3
+			scale: 0.4
 		})
 	});
 

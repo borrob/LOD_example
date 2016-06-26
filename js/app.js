@@ -87,11 +87,11 @@ var mapapp =(function(){
 	function addBuildingLayer(){
 		var buildingStyle = new ol.style.Style({
 			fill: new ol.style.Fill({
-				color: "rgba(150, 150, 150, 0.8)"
+				color: "rgba(150, 150, 150, 0.7)"
 			}),
 			stroke: new ol.style.Stroke({
-				color: "rgb(100, 200, 100)",
-				width: 3
+				color: "rgb(200, 200, 200)",
+				width: 1
 			})
 		});
 	
