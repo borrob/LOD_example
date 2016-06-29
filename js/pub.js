@@ -90,7 +90,7 @@ var pub = function(){
 	});
 
 	var checkFoss4gPub = function(){
-		var foss4gpubs = ["Namenlos", "Tresor", "Pawlow", "Macholds", "Bönssch"];
+		var foss4gpubs = ["Namenlos", "Tresor", "Pawlow", "Macholds", "Luxx"];
 		pubLayerSource.getFeatures().forEach(function(feat){
 			if ($.inArray(feat.get('name'), foss4gpubs)>-1){
 				feat.setStyle(foss4gpub);
